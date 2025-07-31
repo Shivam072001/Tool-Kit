@@ -1,0 +1,235 @@
+// src/pages/BackgroundRemoverPage.jsx
+
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import { fileService } from "../services/fileService";
+import Dropzone from "../components/molecules/Dropzone";
+import Card from "../components/atoms/Card";
+import Button from "../components/atoms/Button";
+import Spinner from "../components/atoms/Spinner";
+import {
+    CheckCircleIcon,
+    XCircleIcon,
+    DocumentArrowDownIcon,
+    PhotoIcon,
+    PaintBrushIcon,
+} from "@heroicons/react/24/solid";
+import Input from "../components/atoms/Input";
+import Label from "../components/atoms/Label";
+import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from "../constants";
+import { config } from "../config/env";
+
+const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+
+const BackgroundRemoverPage = () => {
+    const [file, setFile] = useState(null);
+    const [status, setStatus] = useState("idle");
+    const [taskId, setTaskId] = useState(null);
+    const [resultUrl, setResultUrl] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [originalImageUrl, setOriginalImageUrl] = useState(null);
+
+    // New state for background customization
+    const [bgColor, setBgColor] = useState('#ffffff');
+    const [bgImage, setBgImage] = useState(null);
+    const canvasRef = useRef(null);
+
+    // This effect will draw the final image on the canvas whenever the result or background changes
+    useEffect(() => {
+        if (status === OPERATION_STATUSES.SUCCESS && resultUrl && canvasRef.current) {
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext('2d');
+            const foreground = new Image();
+            foreground.crossOrigin = "anonymous"; // Handle potential CORS issues if URLs are from different origins
+
+            foreground.onload = () => {
+                canvas.width = foreground.naturalWidth;
+                canvas.height = foreground.naturalHeight;
+
+                // Draw background first
+                if (bgImage) {
+                    const background = new Image();
+                    background.crossOrigin = "anonymous";
+                    background.onload = () => {
+                        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(foreground, 0, 0); // Draw foreground on top
+                    };
+                    background.src = URL.createObjectURL(bgImage);
+                } else {
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(foreground, 0, 0); // Draw foreground on top
+                }
+            };
+            foreground.src = resultUrl;
+        }
+    }, [status, resultUrl, bgColor, bgImage]);
+
+
+    // Polling logic is identical to other pages
+    useEffect(() => {
+        let interval;
+        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
+            interval = setInterval(async () => {
+                try {
+                    const { data } = await fileService.checkJobStatus(taskId);
+                    if (data.status === OPERATION_STATUSES.COMPLETED) {
+                        setStatus(OPERATION_STATUSES.SUCCESS);
+                        // Construct full URL for the result image
+                        setResultUrl(`${config.computeServiceUrl}${data.result.fileUrl}`);
+                        clearInterval(interval);
+                    } else if (data.status === OPERATION_STATUSES.FAILED) {
+                        setStatus(OPERATION_STATUSES.ERROR);
+                        setErrorMessage(data.errorMessage || "Background removal failed.");
+                        clearInterval(interval);
+                    }
+                } catch (err) {
+                    setStatus(OPERATION_STATUSES.ERROR);
+                    setErrorMessage("Could not retrieve job status.");
+                    clearInterval(interval);
+                }
+            }, POLLING_INTERVAL);
+        }
+        return () => clearInterval(interval);
+    }, [status, taskId]);
+
+    const handleDrop = useCallback((acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles.length > 0) {
+            const currentFile = acceptedFiles[0];
+            setFile(currentFile);
+            setOriginalImageUrl(URL.createObjectURL(currentFile)); // Create a URL for preview
+            setStatus("idle");
+            setErrorMessage("");
+            setResultUrl(null);
+            setTaskId(null);
+            setBgImage(null);
+        }
+    }, []);
+
+    const handleBgImageDrop = useCallback((acceptedFiles) => {
+        if (acceptedFiles && acceptedFiles.length > 0) {
+            setBgImage(acceptedFiles[0]);
+        }
+    }, []);
+
+    const handleRemoveBackground = async () => {
+        if (!file) return;
+        setStatus(OPERATION_STATUSES.PROCESSING);
+        try {
+            const data = await fileService.uploadForBackgroundRemoval(file);
+            setTaskId(data.taskId);
+        } catch (err) {
+            setStatus(OPERATION_STATUSES.ERROR);
+            setErrorMessage(err.response?.data?.message || "Upload failed.");
+        }
+    };
+
+    const handleDownload = () => {
+        if (canvasRef.current) {
+            const canvas = canvasRef.current;
+            const link = document.createElement('a');
+            link.download = 'result.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    };
+
+    const handleReset = () => {
+        setFile(null);
+        setStatus("idle");
+        setResultUrl(null);
+        setErrorMessage("");
+        setOriginalImageUrl(null);
+        setBgImage(null);
+        setBgColor('#ffffff');
+    };
+
+    return (
+        <div className="max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold mb-2 text-foreground">
+                AI Background Remover
+            </h1>
+            <p className="text-muted-foreground mb-8">
+                Automatically remove the background from any image, then add a new one.
+            </p>
+
+            <Card className="p-8">
+                {status === "idle" && (
+                    <>
+                        <Dropzone onDrop={handleDrop} accept={{ 'image/*': [] }} />
+                        {file && (
+                            <div className="mt-6 text-center">
+                                <p className="text-foreground">
+                                    Selected: <span className="font-medium">{file.name}</span>
+                                </p>
+                                <img src={originalImageUrl} alt="Original preview" className="mt-4 mx-auto max-h-48 rounded-lg shadow-md" />
+                                <Button
+                                    onClick={handleRemoveBackground}
+                                    className="mt-4"
+                                >
+                                    Remove Background
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {status === OPERATION_STATUSES.PROCESSING && (
+                    <div className="mt-6 flex flex-col items-center gap-4 py-10">
+                        <Spinner />
+                        <p className="text-muted-foreground animate-pulse">
+                            Removing background. This may take a moment...
+                        </p>
+                    </div>
+                )}
+
+                {status === OPERATION_STATUSES.SUCCESS && resultUrl && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 className="font-bold text-lg text-center mb-2 text-foreground">Result</h3>
+                            <div className="bg-grid-pattern p-2 rounded-lg border border-border">
+                                <canvas ref={canvasRef} className="w-full h-auto rounded" />
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-lg text-center mb-2 text-foreground">Customize Background</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <Label htmlFor="bg-color">Background Color</Label>
+                                    <div className="relative">
+                                        <Input id="bg-color" type="text" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full pl-12" />
+                                        <div className="absolute inset-y-0 left-0 flex items-center pl-2">
+                                            <Input type="color" value={bgColor} onChange={(e) => { setBgColor(e.target.value); setBgImage(null); }} className="h-8 w-8 p-0 border-none rounded cursor-pointer" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-center text-muted-foreground">OR</div>
+                                <div>
+                                    <Label>Background Image</Label>
+                                    <Dropzone onDrop={handleBgImageDrop} accept={{ 'image/*': [] }} />
+                                    {bgImage && <p className="text-sm text-center mt-2 text-muted-foreground">Selected: {bgImage.name}</p>}
+                                </div>
+                            </div>
+                            <div className="mt-6 flex flex-col gap-2">
+                                <Button onClick={handleDownload} className="w-full">
+                                    <DocumentArrowDownIcon className="h-5 w-5 mr-2" /> Download
+                                </Button>
+                                <Button onClick={handleReset} variant="ghost" className="w-full">Start Over</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {status === OPERATION_STATUSES.ERROR && (
+                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-lg">
+                        <XCircleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
+                        <p className="text-destructive font-bold">An Error Occurred</p>
+                        <p className="text-destructive/80 text-sm">{errorMessage}</p>
+                        <Button onClick={handleReset} variant="ghost" className="mt-4">Try Again</Button>
+                    </div>
+                )}
+            </Card>
+        </div>
+    );
+};
+
+export default BackgroundRemoverPage;

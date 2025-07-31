@@ -1,0 +1,75 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # Frontend: Vite + React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173" # Default Vite port
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Exclude node_modules from being overwritten by the host
+    environment:
+      - VITE_API_GATEWAY_URL=http://gateway:8080
+
+  # API Gateway: Node.js + Express
+  gateway:
+    build:
+      context: ./backend-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend-gateway:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+    environment:
+      - PORT=8080
+      - MONGO_URI=mongodb://mongo:27017/utilitybox
+      - COMPUTE_SERVICE_URL=http://compute:8000
+      - JWT_SECRET=your-strong-secret-for-development
+
+  # Computational Service: Django + Celery
+  compute:
+    build:
+      context: ./backend-compute
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend-compute:/app
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+
+  # Celery Worker for the Computational Service
+  worker:
+    build:
+      context: ./backend-compute
+      dockerfile: Dockerfile
+    command: celery -A core worker --loglevel=info
+    volumes:
+      - ./backend-compute:/app
+    depends_on:
+      - redis
+
+  # Database
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # Cache / Celery Broker
+  redis:
+    image: redis:7.0-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo-data:
