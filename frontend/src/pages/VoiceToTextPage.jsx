@@ -147,7 +147,7 @@ const VoiceToTextPage = () => {
                         <h3 className="text-xl font-bold text-foreground">
                             Transcription Result
                         </h3>
-                        <div className="mt-4 p-4 bg-input border border-border rounded-lg max-h-60 overflow-y-auto">
+                        <div className="mt-4 p-4 bg-input border border-border rounded-xl max-h-60 overflow-y-auto">
                             <p className="text-foreground whitespace-pre-wrap">
                                 {resultText}
                             </p>
@@ -165,7 +165,7 @@ const VoiceToTextPage = () => {
                 );
             case OPERATION_STATUSES.ERROR:
                 return (
-                    <div className="mt-6 text-center bg-destructive/10 p-4 rounded-md">
+                    <div className="mt-6 text-center bg-destructive/10 p-4 rounded-xl">
                         <p className="text-destructive font-bold">{errorMessage}</p>
                     </div>
                 );
@@ -175,7 +175,7 @@ const VoiceToTextPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">Voice to Text</h1>
             <p className="text-muted-foreground mb-8">
                 Transcribe speech from your microphone or an audio file.
@@ -210,12 +210,12 @@ const VoiceToTextPage = () => {
                                 Real-time Transcription
                             </h2>
                             {!hasSupport ? (
-                                <div className="p-4 bg-destructive/10 text-destructive text-center rounded-md">
+                                <div className="p-4 bg-destructive/10 text-destructive text-center rounded-xl animate-fadeIn">
                                     Speech recognition is not supported in your browser.
                                 </div>
                             ) : (
                                 <>
-                                    <div className="w-full h-64 p-4 bg-input border border-border rounded-md overflow-y-auto">
+                                    <div className="w-full h-64 p-4 bg-input border border-border rounded-xl overflow-y-auto">
                                         <p className="whitespace-pre-wrap">{transcript || <span className="text-muted-foreground">Press "Start Listening" to begin...</span>}</p>
                                     </div>
                                     <div className="mt-4 flex items-center justify-between">
@@ -249,12 +249,12 @@ const VoiceToTextPage = () => {
                                 <>
                                     <Dropzone onDrop={handleDrop} accept={{ "audio/*": [] }} />
                                     {file && (
-                                        <div className="mt-6 text-center">
+                                        <div className="mt-6 text-center animate-fadeIn">
                                             <p className="text-foreground">
                                                 Selected:{" "}
                                                 <span className="font-medium">{file.name}</span>
                                             </p>
-                                            <Button onClick={handleTranscribeFile} className="mt-4">
+                                            <Button onClick={handleTranscribeFile} isLoading={status === OPERATION_STATUSES.PROCESSING} className="mt-4">
                                                 Transcribe File
                                             </Button>
                                         </div>

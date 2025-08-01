@@ -10,8 +10,8 @@ import Spinner from '../components/atoms/Spinner.jsx';
 import { ClipboardDocumentIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
 import { useAuthStore } from '../store/authStore.js';
 import { config } from '../config/env.js';
-
-const POLLING_INTERVAL = 5000; // Poll for new emails every 5 seconds
+import Input from '../components/atoms/Input.jsx';
+import Label from '../components/atoms/Label.jsx';
 
 const TemporaryEmailPage = () => {
     const { user } = useAuthStore();
@@ -27,6 +27,10 @@ const TemporaryEmailPage = () => {
         try {
             const response = await temporaryEmailService.getInbox();
             setEmailData(response.data.email);
+            if (response.data.email) {
+                setForwardingAddress(response.data.email.forwardingAddress || '');
+                setForwardingEnabled(response.data.email.forwardingEnabled || false);
+            }
         } catch (err) {
             setError('Could not fetch inbox. Please try refreshing.');
         } finally {
@@ -59,6 +63,8 @@ const TemporaryEmailPage = () => {
         try {
             const response = await temporaryEmailService.generateNewEmail();
             setEmailData(response.data.email);
+            setForwardingAddress('');
+            setForwardingEnabled(false);
         } catch (err) {
             setError('Failed to generate a new email address.');
         } finally {
@@ -103,7 +109,7 @@ const TemporaryEmailPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">Temporary Email Generator</h1>
             <p className="text-muted-foreground mb-8">
                 Instantly create a disposable email address. Emails expire after one hour.
@@ -114,12 +120,12 @@ const TemporaryEmailPage = () => {
                     <div className="flex justify-center"><Spinner /></div>
                 ) : (
                     <>
-                        <div className="bg-input p-4 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="bg-input p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 border border-border">
                             <span className="font-mono text-lg text-primary break-all">
                                 {emailData ? emailData.emailAddress : 'No active email'}
                             </span>
                             <div className="flex gap-2 flex-shrink-0">
-                                <Button onClick={copyToClipboard} variant="ghost" disabled={!emailData}>
+                                <Button onClick={copyToClipboard} variant="ghost" disabled={!emailData || copied}>
                                     <ClipboardDocumentIcon className="h-5 w-5 mr-2" />
                                     {copied ? 'Copied!' : 'Copy'}
                                 </Button>
@@ -140,7 +146,7 @@ const TemporaryEmailPage = () => {
             </Card>
 
             {emailData && (
-                <Card className="mt-8 p-8">
+                <Card className="mt-8 p-8 animate-fadeIn delay-100">
                     <h3 className="text-xl font-bold text-foreground">Email Forwarding</h3>
                     <p className="text-muted-foreground mt-1 mb-4">
                         Automatically forward incoming emails to another address.
@@ -170,14 +176,14 @@ const TemporaryEmailPage = () => {
                     )}
 
                     <div className="mt-6">
-                        <Button onClick={handleSaveForwarding} disabled={isSavingForward}>
-                            {isSavingForward ? 'Saving...' : 'Save Settings'}
+                        <Button onClick={handleSaveForwarding} isLoading={isSavingForward}>
+                            Save Settings
                         </Button>
                     </div>
                 </Card>
             )}
 
-            <Card className="mt-8 p-6">
+            <Card className="mt-8 p-6 animate-fadeIn delay-200">
                 <Inbox emails={emailData?.inbox} />
             </Card>
         </div>

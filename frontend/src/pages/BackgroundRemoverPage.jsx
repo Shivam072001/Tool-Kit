@@ -144,7 +144,7 @@ const BackgroundRemoverPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">
                 AI Background Remover
             </h1>
@@ -157,14 +157,14 @@ const BackgroundRemoverPage = () => {
                     <>
                         <Dropzone onDrop={handleDrop} accept={{ 'image/*': [] }} />
                         {file && (
-                            <div className="mt-6 text-center">
-                                <p className="text-foreground">
-                                    Selected: <span className="font-medium">{file.name}</span>
-                                </p>
-                                <img src={originalImageUrl} alt="Original preview" className="mt-4 mx-auto max-h-48 rounded-lg shadow-md" />
+                            <div className="mt-6 text-center animate-fadeIn">
+                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <div className="mt-4 flex justify-center">
+                                    <img src={originalImageUrl} alt="Original preview" className="max-h-48 rounded-xl shadow-md border border-border" />
+                                </div>
                                 <Button
                                     onClick={handleRemoveBackground}
-                                    className="mt-4"
+                                    className="mt-6"
                                 >
                                     Remove Background
                                 </Button>
@@ -174,20 +174,20 @@ const BackgroundRemoverPage = () => {
                 )}
 
                 {status === OPERATION_STATUSES.PROCESSING && (
-                    <div className="mt-6 flex flex-col items-center gap-4 py-10">
+                    <div className="mt-6 flex flex-col items-center gap-4 py-10 animate-pulse">
                         <Spinner />
-                        <p className="text-muted-foreground animate-pulse">
+                        <p className="text-muted-foreground">
                             Removing background. This may take a moment...
                         </p>
                     </div>
                 )}
 
                 {status === OPERATION_STATUSES.SUCCESS && resultUrl && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fadeIn">
                         <div>
                             <h3 className="font-bold text-lg text-center mb-2 text-foreground">Result</h3>
-                            <div className="bg-grid-pattern p-2 rounded-lg border border-border">
-                                <canvas ref={canvasRef} className="w-full h-auto rounded" />
+                            <div className="bg-grid-pattern p-2 rounded-xl border border-border aspect-square">
+                                <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
                             </div>
                         </div>
                         <div>
@@ -198,7 +198,7 @@ const BackgroundRemoverPage = () => {
                                     <div className="relative">
                                         <Input id="bg-color" type="text" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-full pl-12" />
                                         <div className="absolute inset-y-0 left-0 flex items-center pl-2">
-                                            <Input type="color" value={bgColor} onChange={(e) => { setBgColor(e.target.value); setBgImage(null); }} className="h-8 w-8 p-0 border-none rounded cursor-pointer" />
+                                            <Input type="color" value={bgColor} onChange={(e) => { setBgColor(e.target.value); setBgImage(null); }} className="h-8 w-8 p-0 border-none rounded-lg cursor-pointer" />
                                         </div>
                                     </div>
                                 </div>
@@ -220,7 +220,7 @@ const BackgroundRemoverPage = () => {
                 )}
 
                 {status === OPERATION_STATUSES.ERROR && (
-                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-lg">
+                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-xl animate-fadeIn">
                         <XCircleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
                         <p className="text-destructive font-bold">An Error Occurred</p>
                         <p className="text-destructive/80 text-sm">{errorMessage}</p>

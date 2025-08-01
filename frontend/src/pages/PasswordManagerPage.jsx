@@ -50,9 +50,9 @@ const PasswordManagerPage = () => {
 
     if (!isUnlocked) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-background">
-                <Card className="p-8 w-full max-w-md">
-                    <h2 className="text-2xl font-bold mb-6 text-center text-foreground">Unlock Your Vault</h2>
+            <div className="flex items-center justify-center min-h-screen bg-background p-4">
+                <Card className="p-8 w-full max-w-md animate-fadeIn shadow-2xl">
+                    <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Unlock Your Vault</h2>
                     <p className="text-center text-muted-foreground mb-4">
                         Enter your master password. This password is never sent to our servers.
                     </p>
@@ -60,8 +60,8 @@ const PasswordManagerPage = () => {
                     <form onSubmit={handleUnlock}>
                         <Label htmlFor="master-password">Master Password</Label>
                         <Input id="master-password" type="password" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
-                        <Button type="submit" disabled={isLoading} className="w-full mt-6">
-                            {isLoading ? 'Unlocking...' : 'Unlock'}
+                        <Button type="submit" isLoading={isLoading} className="w-full mt-6">
+                            Unlock
                         </Button>
                     </form>
                 </Card>

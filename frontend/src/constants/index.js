@@ -5,6 +5,10 @@ export const BASE_ROUTE = '/tools'
 
 // Application Routes
 export const ROUTES = {
+    PRICING: "/pricing",
+    LOGIN: "/login",
+    REGISTER: "/register",
+
     DASHBOARD: "/dashboard",
 
     URL_SHORTENER: "/url-shortener",

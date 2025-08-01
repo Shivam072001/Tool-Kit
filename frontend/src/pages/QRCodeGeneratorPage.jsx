@@ -162,7 +162,7 @@ const QRCodeGeneratorPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">QR Code Generator & Reader</h1>
             <p className="text-muted-foreground mb-8">Create, save, and scan QR codes with ease.</p>
 
@@ -209,12 +209,12 @@ const QRCodeGeneratorPage = () => {
                                     </div>
                                     <div className="flex gap-2 mt-6">
                                         <Button onClick={handleDownload} variant="secondary" className="w-full">Download</Button>
-                                        <Button onClick={handleSave} disabled={isSaving} className="w-full">
-                                            {isSaving ? 'Saving...' : 'Save'}
+                                        <Button onClick={handleSave} isLoading={isSaving} className="w-full">
+                                            Save
                                         </Button>
                                     </div>
                                 </div>
-                                <div className="flex justify-center items-center bg-white p-4 rounded-lg border border-border">
+                                <div className="flex justify-center items-center p-4 rounded-lg border-2 border-dashed border-border aspect-square">
                                     <QRCodeSVG
                                         ref={qrCodeRef}
                                         value={qrValue}
@@ -231,7 +231,8 @@ const QRCodeGeneratorPage = () => {
                                 onDeleteClick={handleDeleteClick}
                                 onDisable={handleDisable}
                                 onEnable={handleEnable}
-                            />                        </>
+                            />
+                        </>
                     )}
 
                     {activeTab === 'read' && (

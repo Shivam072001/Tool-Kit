@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
   --color-primary-bg: 0 0% 10%;
   --color-primary-text: 0 0% 98%;
@@ -16,26 +16,18 @@
   --color-destructive: 0 62.8% 30.6%;
   --color-destructive-foreground: 210 40% 98%;
 
-  --colors-primary-bg: hsl(var(--color-primary-bg));
-  --colors-primary-text: hsl(var(--color-primary-text));
-  --colors-accent-main: hsl(var(--color-accent-main));
-  --colors-accent-secondary: hsl(var(--color-accent-secondary));
+  --colors-background: hsl(var(--color-primary-bg));
+  --colors-foreground: hsl(var(--color-primary-text));
+  --colors-primary: hsl(var(--color-accent-main));
+  --colors-secondary: hsl(var(--color-accent-secondary));
   --colors-border: hsl(var(--color-border));
-  --colors-card-bg: hsl(var(--color-card-bg));
-  --colors-card-text: hsl(var(--color-card-text));
+  --colors-card: hsl(var(--color-card-bg));
+  --colors-card-foreground: hsl(var(--color-card-text));
   --colors-input: hsl(var(--color-input));
   --colors-muted-foreground: hsl(var(--color-muted-foreground));
   --colors-ring: hsl(var(--color-ring));
   --colors-destructive: hsl(var(--color-destructive));
   --colors-destructive-foreground: hsl(var(--color-destructive-foreground));
-
-  /* Map to Tailwind's conventional names for easier use in components */
-  --colors-background: var(--colors-primary-bg);
-  --colors-foreground: var(--colors-primary-text);
-  --colors-primary: var(--colors-accent-main);
-  --colors-secondary: var(--colors-accent-secondary);
-  --colors-card: var(--colors-card-bg);
-  --colors-card-foreground: var(--colors-card-text);
 
   --borderRadius-lg: var(--radius);
   --borderRadius-md: calc(var(--radius) - 2px);
@@ -44,38 +36,66 @@
 
 @layer base {
   :root {
-    /* --- Pure Black & White Theme --- */
-    --color-primary-bg: #000000; /* pure black background */
-    --color-primary-text: #ffffff; /* pure white text */
-    --color-accent-main: #ffffff; /* white accent */
-    --color-accent-secondary: #cccccc; /* light gray secondary */
-    --color-border: #333333; /* dark gray border */
-    --color-card-bg: #111111; /* very dark card */
-    --color-card-text: #ffffff; /* white card text */
-    --color-input: #1a1a1a; /* dark input bg */
-    --color-muted-foreground: #999999; /* muted gray */
-    --color-ring: #ffffff; /* white ring */
-    --color-destructive: #ff4444; /* bright red */
-    --color-destructive-foreground: #ffffff; /* white */
-    --glass-bg: #000000; /* pure black glass */
-    --glass-blur: 16px;
+    /* --- Base (Black & White) Theme - Dark Mode --- */
+    --color-primary-bg: 222.2 84% 4.9%;
+    --color-primary-text: 210 40% 98%;
+    --color-accent-main: 221.2 83.2% 53.3%;
+    --color-accent-secondary: 217.2 91.2% 59.8%;
+    --color-border: 217.2 32.6% 17.5%;
+    --color-card-bg: 222.2 84% 8.9%;
+    --color-card-text: 210 40% 98%;
+    --color-input: 217.2 32.6% 12.5%;
+    --color-muted-foreground: 215 14% 70%;
+    --color-ring: 221.2 83.2% 53.3%;
+    --color-destructive: 0 62.8% 30.6%;
+    --color-destructive-foreground: 210 40% 98%;
   }
 
   :root.light {
-    --color-primary-bg: #ffffff; /* pure white background */
-    --color-primary-text: #000000; /* pure black text */
-    --color-accent-main: #000000; /* black accent */
-    --color-accent-secondary: #333333; /* dark gray secondary */
-    --color-border: #e0e0e0; /* light gray border */
-    --color-card-bg: #f8f8f8; /* very light card */
-    --color-card-text: #000000; /* black card text */
-    --color-input: #f5f5f5; /* light input bg */
-    --color-muted-foreground: #666666; /* muted gray */
-    --color-ring: #000000; /* black ring */
-    --color-destructive: #ff0000; /* bright red */
-    --color-destructive-foreground: #ffffff; /* white */
-    --glass-bg: #ffffff; /* pure white glass */
-    --glass-blur: 16px;
+    /* --- Base (Black & White) Theme - Light Mode --- */
+    --color-primary-bg: 210 30% 98%;
+    --color-primary-text: 222.2 84% 4.9%;
+    --color-accent-main: 221.2 83.2% 53.3%;
+    --color-accent-secondary: 217.2 91.2% 59.8%;
+    --color-border: 214.3 31.8% 91.4%;
+    --color-card-bg: 0 0% 100%;
+    --color-card-text: 222.2 84% 4.9%;
+    --color-input: 210 40% 96.1%;
+    --color-muted-foreground: 215.4 16.3% 46.9%;
+    --color-ring: 221.2 83.2% 53.3%;
+    --color-destructive: 0 62.8% 30.6%;
+    --color-destructive-foreground: 210 40% 98%;
+  }
+
+  /* Purple Amber Theme */
+  :root[data-theme="purple-amber"].dark {
+    --color-primary-bg: 240 10% 3.9%;
+    --color-primary-text: 240 5% 64.9%;
+    --color-accent-main: 252 82.9% 50%;
+    --color-accent-secondary: 39 100% 50%;
+    --color-border: 240 3.7% 15.9%;
+    --color-card-bg: 240 10% 4%;
+    --color-card-text: 240 5% 64.9%;
+    --color-input: 240 3.7% 15.9%;
+    --color-muted-foreground: 240 4.8% 30.9%;
+    --color-ring: 252 82.9% 50%;
+    --color-destructive: 0 62.8% 30.6%;
+    --color-destructive-foreground: 210 40% 98%;
+  }
+
+  :root[data-theme="purple-amber"].light {
+    --color-primary-bg: 240 5% 96.1%;
+    --color-primary-text: 240 10% 3.9%;
+    --color-accent-main: 252 82.9% 50%;
+    --color-accent-secondary: 39 100% 50%;
+    --color-border: 240 5.9% 90%;
+    --color-card-bg: 0 0% 100%;
+    --color-card-text: 240 10% 3.9%;
+    --color-input: 240 4.8% 95.9%;
+    --color-muted-foreground: 240 3.8% 46.1%;
+    --color-ring: 252 82.9% 50%;
+    --color-destructive: 0 62.8% 30.6%;
+    --color-destructive-foreground: 210 40% 98%;
   }
 
   /* Pink Teal Cream Theme */
@@ -92,7 +112,6 @@
     --color-ring: #ec4899;
     --color-destructive: #f87171;
     --color-destructive-foreground: #1a0f1a;
-    --glass-bg: #1a0f1a;
   }
   :root[data-theme="pink-teal-cream"].light {
     --color-primary-bg: #fdf2f8;
@@ -107,7 +126,6 @@
     --color-ring: #ec4899;
     --color-destructive: #dc2626;
     --color-destructive-foreground: #fdf2f8;
-    --glass-bg: #fdf2f8;
   }
 
   /* Orange Yellow Theme */
@@ -124,7 +142,6 @@
     --color-ring: #f97316;
     --color-destructive: #f87171;
     --color-destructive-foreground: #1a0f00;
-    --glass-bg: #1a0f00;
   }
   :root[data-theme="orange-yellow"].light {
     --color-primary-bg: #fefce8;
@@ -139,7 +156,6 @@
     --color-ring: #f97316;
     --color-destructive: #dc2626;
     --color-destructive-foreground: #fefce8;
-    --glass-bg: #fefce8;
   }
 
   /* Blue Mint Theme */
@@ -156,7 +172,6 @@
     --color-ring: #3b82f6;
     --color-destructive: #f87171;
     --color-destructive-foreground: #0f1a1a;
-    --glass-bg: #0f1a1a;
   }
   :root[data-theme="blue-mint"].light {
     --color-primary-bg: #f0fdfa;
@@ -171,7 +186,6 @@
     --color-ring: #3b82f6;
     --color-destructive: #dc2626;
     --color-destructive-foreground: #f0fdfa;
-    --glass-bg: #f0fdfa;
   }
 
   /* Dark Green Ivory Yellow Theme */
@@ -188,7 +202,6 @@
     --color-ring: #16a34a;
     --color-destructive: #f87171;
     --color-destructive-foreground: #0f1a0f;
-    --glass-bg: #0f1a0f;
   }
   :root[data-theme="dark-green-ivory-yellow"].light {
     --color-primary-bg: #fafaf9;
@@ -203,7 +216,6 @@
     --color-ring: #16a34a;
     --color-destructive: #dc2626;
     --color-destructive-foreground: #fafaf9;
-    --glass-bg: #fafaf9;
   }
 
   /* Navy Electric Blue Theme */
@@ -220,7 +232,6 @@
     --color-ring: #06b6d4;
     --color-destructive: #f87171;
     --color-destructive-foreground: #0f0f1a;
-    --glass-bg: #0f0f1a;
   }
   :root[data-theme="navy-electric-blue"].light {
     --color-primary-bg: #f8fafc;
@@ -235,44 +246,63 @@
     --color-ring: #06b6d4;
     --color-destructive: #dc2626;
     --color-destructive-foreground: #f8fafc;
-    --glass-bg: #f8fafc;
-  }
-
-  /* Black White Theme */
-  :root[data-theme="black-white"].dark {
-    --color-primary-bg: #000000;
-    --color-primary-text: #ffffff;
-    --color-accent-main: #ffffff;
-    --color-accent-secondary: #cccccc;
-    --color-border: #333333;
-    --color-card-bg: #111111;
-    --color-card-text: #ffffff;
-    --color-input: #1a1a1a;
-    --color-muted-foreground: #999999;
-    --color-ring: #ffffff;
-    --color-destructive: #ff4444;
-    --color-destructive-foreground: #ffffff;
-    --glass-bg: #000000;
-  }
-  :root[data-theme="black-white"].light {
-    --color-primary-bg: #ffffff;
-    --color-primary-text: #000000;
-    --color-accent-main: #000000;
-    --color-accent-secondary: #333333;
-    --color-border: #e0e0e0;
-    --color-card-bg: #f8f8f8;
-    --color-card-text: #000000;
-    --color-input: #f5f5f5;
-    --color-muted-foreground: #666666;
-    --color-ring: #000000;
-    --color-destructive: #ff0000;
-    --color-destructive-foreground: #ffffff;
-    --glass-bg: #ffffff;
   }
 }
 
 body {
-  @reference bg-background text-foreground;
+  @apply bg-background text-foreground;
   font-feature-settings: "rlig" 1, "calt" 1;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom classes for the glassmorphism effect */
+.glass {
+  background-color: var(--colors-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--colors-border);
+}
+
+/* Custom keyframes and classes for animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+.animate-slideInRight {
+  animation: slideInRight 0.8s ease-out forwards;
+}
+.animate-slideInLeft {
+  animation: slideInLeft 0.8s ease-out forwards;
 }

@@ -86,7 +86,7 @@ const MetadataInspectorPage = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">
                 Metadata Inspector
             </h1>
@@ -97,28 +97,28 @@ const MetadataInspectorPage = () => {
             <Card className="p-8">
                 <Dropzone onDrop={handleDrop} />
                 {file && (
-                    <div className="mt-6 text-center">
+                    <div className="mt-6 text-center animate-fadeIn">
                         <p className="text-foreground">
                             Selected: <span className="font-medium">{file.name}</span>
                         </p>
                         <Button
                             onClick={handleInspect}
-                            disabled={status === "inspecting"}
+                            isLoading={status === "inspecting"}
                             className="mt-4"
                         >
-                            {status === "inspecting" ? "Inspecting..." : "Inspect File"}
+                            Inspect File
                         </Button>
                     </div>
                 )}
             </Card>
 
             {status === "inspecting" && (
-                <div className="flex justify-center mt-8">
+                <div className="flex justify-center mt-8 animate-fadeIn">
                     <Spinner />
                 </div>
             )}
             {status === OPERATION_STATUSES.ERROR && (
-                <Card className="mt-8 p-4 bg-destructive/10 text-center text-destructive font-bold">
+                <Card className="mt-8 p-4 bg-destructive/10 text-center text-destructive font-bold animate-fadeIn">
                     {errorMessage}
                 </Card>
             )}

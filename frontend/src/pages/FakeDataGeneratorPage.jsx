@@ -92,11 +92,12 @@ const FakeDataGeneratorPage = () => {
         setDataType(item.dataType);
         setCount(item.count);
         setLocale(item.locale);
+        setGeneratedData([]);
         window.scrollTo(0, 0);
     };
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">Fake Data Generator</h1>
             <p className="text-muted-foreground mb-8">
                 Create realistic placeholder data for your projects and mockups.
@@ -106,7 +107,7 @@ const FakeDataGeneratorPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                     <div className="md:col-span-1">
                         <Label htmlFor="data-type">Data Type</Label>
-                        <select id="data-type" value={dataType} onChange={(e) => setDataType(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                        <select id="data-type" value={dataType} onChange={(e) => setDataType(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-ring">
                             {dataTypes.map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>)}
                         </select>
                     </div>
@@ -116,13 +117,13 @@ const FakeDataGeneratorPage = () => {
                     </div>
                     <div className="md:col-span-1">
                         <Label htmlFor="locale">Locale</Label>
-                        <select id="locale" value={locale} onChange={(e) => setLocale(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                        <select id="locale" value={locale} onChange={(e) => setLocale(e.target.value)} className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-ring">
                             {locales.map(l => <option key={l} value={l}>{l}</option>)}
                         </select>
                     </div>
                     <div className="md:col-span-1">
-                        <Button onClick={handleGenerate} disabled={status === 'generating'} className="w-full">
-                            {status === 'generating' ? <Spinner /> : 'Generate'}
+                        <Button onClick={handleGenerate} isLoading={status === 'generating'} className="w-full">
+                            Generate
                         </Button>
                     </div>
                 </div>

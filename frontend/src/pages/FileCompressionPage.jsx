@@ -3,6 +3,8 @@ import { fileService } from '../services/fileService';
 import Dropzone from '../components/molecules/Dropzone';
 import Card from '../components/atoms/Card';
 import Button from '../components/atoms/Button';
+import Spinner from '../components/atoms/Spinner';
+import { CheckCircleIcon, XCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/solid';
 import { OPERATION_STATUSES, POLLING_INTERVAL_MS, RESPONSE_STATUS } from '../constants';
 import { config } from '../config/env';
 
@@ -73,53 +75,86 @@ const FileCompressorPage = () => {
         }
     };
 
+    const handleReset = () => {
+        setFile(null);
+        setStatus('idle');
+        setErrorMessage('');
+        setProgress(0);
+        setResultUrl(null);
+    };
+
+    const renderStatus = () => {
+        switch (status) {
+            case 'uploading':
+                return (
+                    <div className="mt-6">
+                        <p className="text-center text-foreground mb-2">Uploading: {progress}%</p>
+                        <div className="w-full bg-border rounded-full h-2.5">
+                            <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+                        </div>
+                    </div>
+                );
+            case OPERATION_STATUSES.PROCESSING:
+                return (
+                    <div className="mt-6 flex flex-col items-center gap-4 py-10">
+                        <Spinner />
+                        <p className="text-muted-foreground animate-pulse">Processing... Please wait.</p>
+                    </div>
+                );
+            case OPERATION_STATUSES.SUCCESS:
+                return (
+                    <div className="mt-6 text-center bg-primary/10 p-6 rounded-xl animate-fadeIn">
+                        <CheckCircleIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+                        <p className="text-primary font-bold mb-4">Compression Complete!</p>
+                        <a href={resultUrl} download className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground font-bold rounded-full hover:opacity-90 transition-colors">
+                            <DocumentArrowDownIcon className="h-5 w-5" />
+                            Download Compressed File
+                        </a>
+                    </div>
+                );
+            case OPERATION_STATUSES.ERROR:
+                return (
+                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-xl animate-fadeIn">
+                        <XCircleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
+                        <p className="text-destructive font-bold">An Error Occurred</p>
+                        <p className="text-destructive/80 text-sm">{errorMessage}</p>
+                    </div>
+                );
+            default:
+                return null;
+        }
+    }
+
+
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">File Compressor</h1>
             <p className="text-muted-foreground mb-8">Reduce file sizes for images, PDFs, and documents.</p>
 
             <Card className="p-8">
-                <Dropzone onDrop={handleDrop} accept={acceptedFiles} />
+                {status === 'idle' ? (
+                    <>
+                        <Dropzone onDrop={handleDrop} accept={acceptedFiles} />
+                        {file && (
+                            <div className="mt-6 text-center">
+                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <Button onClick={handleUpload} className="mt-4">
+                                    Compress File
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    renderStatus()
+                )}
 
-                {file && !resultUrl && (
+                {(status !== 'idle') && (
                     <div className="mt-6 text-center">
-                        <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
-                        <Button onClick={handleUpload} disabled={status !== 'idle'} className="mt-4">
-                            Compress File
-                        </Button>
-                    </div>
-                )}
-
-                {status === 'uploading' && (
-                    <div className="mt-6">
-                        <p className="text-center text-foreground mb-2">Uploading: {progress}%</p>
-                        <div className="w-full bg-border rounded-full h-2.5">
-                            <div className="bg-primary h-2.5 rounded-full" style={{ width: `${progress}%` }}></div>
-                        </div>
-                    </div>
-                )}
-
-                {status === OPERATION_STATUSES.PROCESSING && (
-                    <p className="mt-6 text-center text-foreground animate-pulse">Processing... Please wait.</p>
-                )}
-
-                {status === OPERATION_STATUSES.SUCCESS && resultUrl && (
-                    <div className="mt-6 text-center bg-green-500/10 p-4 rounded-md">
-                        <p className="text-green-500 font-bold mb-4">Compression Complete!</p>
-                        <a href={resultUrl} download className="px-6 py-2 bg-secondary text-primary-foreground rounded-md hover:opacity-90">
-                            Download Compressed File
-                        </a>
-                        <button onClick={() => setFile(null)} className="ml-4 text-muted-foreground hover:text-foreground">Start Over</button>
-                    </div>
-                )}
-
-                {status === OPERATION_STATUSES.ERROR && (
-                    <div className="mt-6 bg-destructive text-destructive-foreground p-3 rounded-md text-center">
-                        {errorMessage}
+                        <Button onClick={handleReset} variant="ghost">Start Over</Button>
                     </div>
                 )}
             </Card>
-        </div >
+        </div>
     );
 };
 

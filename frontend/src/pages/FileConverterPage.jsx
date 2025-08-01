@@ -7,6 +7,7 @@ import Card from '../components/atoms/Card';
 import Button from '../components/atoms/Button';
 import Spinner from '../components/atoms/Spinner';
 import { CheckCircleIcon, XCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/solid';
+import Label from '../components/atoms/Label';
 import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from '../constants';
 
 const POLLING_INTERVAL = POLLING_INTERVAL_MS;
@@ -109,10 +110,10 @@ const FileConverterPage = () => {
                 );
             case OPERATION_STATUSES.SUCCESS:
                 return (
-                    <div className="mt-6 text-center bg-green-500/10 p-6 rounded-lg">
-                        <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                        <p className="text-green-700 dark:text-green-300 font-bold mb-4">Conversion Complete!</p>
-                        <a href={resultUrl} download className="inline-flex items-center gap-2 px-6 py-2 bg-secondary text-primary-foreground rounded-md hover:opacity-90">
+                    <div className="mt-6 text-center bg-primary/10 p-6 rounded-xl animate-fadeIn">
+                        <CheckCircleIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+                        <p className="text-primary font-bold mb-4">Conversion Complete!</p>
+                        <a href={resultUrl} download className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground font-bold rounded-full hover:opacity-90">
                             <DocumentArrowDownIcon className="h-5 w-5" />
                             Download Result
                         </a>
@@ -120,7 +121,7 @@ const FileConverterPage = () => {
                 );
             case OPERATION_STATUSES.ERROR:
                 return (
-                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-lg">
+                    <div className="mt-6 text-center bg-destructive/10 p-6 rounded-xl animate-fadeIn">
                         <XCircleIcon className="h-12 w-12 text-destructive mx-auto mb-4" />
                         <p className="text-destructive font-bold">An Error Occurred</p>
                         <p className="text-destructive/80 text-sm">{errorMessage}</p>
@@ -132,7 +133,7 @@ const FileConverterPage = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">File Converter</h1>
             <p className="text-muted-foreground mb-8">Convert your files from one format to another with a single click.</p>
 
@@ -149,12 +150,12 @@ const FileConverterPage = () => {
                                 <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
                                 {possibleConversions.length > 0 && (
                                     <div className="mt-4">
-                                        <label htmlFor="output-format" className="text-muted-foreground mr-2">Convert to:</label>
+                                        <Label htmlFor="output-format" className="text-muted-foreground mr-2">Convert to:</Label>
                                         <select
                                             id="output-format"
                                             value={outputFormat}
                                             onChange={(e) => setOutputFormat(e.target.value)}
-                                            className="bg-input border border-border rounded-md px-2 py-1"
+                                            className="mt-1 block w-full sm:w-auto mx-auto px-3 py-2 bg-input border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                                         >
                                             {possibleConversions.map(format => (
                                                 <option key={format} value={format}>{format}</option>

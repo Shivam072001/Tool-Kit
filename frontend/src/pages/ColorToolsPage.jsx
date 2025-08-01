@@ -8,7 +8,7 @@ import ColorInput from '../components/molecules/ColorInput';
 import PaletteList from '../components/organisms/PaletteList';
 import ConfirmDeleteModal from '../components/organisms/ConfirmDeleteModal';
 import { colorService } from '../services/colorService';
-import { CheckCircleIcon, XCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, XCircleIcon, TrashIcon, PlusIcon } from '@heroicons/react/24/solid';
 import { checkWcagCompliance, getContrastRatio, ColorBlindnessFilters } from '../utils/colors';
 
 
@@ -98,22 +98,22 @@ const ColorToolsPage = () => {
     return (
         <>
             <ColorBlindnessFilters />
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto animate-fadeIn">
                 <h1 className="text-4xl font-bold mb-2 text-foreground">Color Utilities Suite</h1>
                 <p className="text-muted-foreground mb-8">
                     Check contrast, build palettes, and simulate color blindness.
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="space-y-8">
+                    <div className="space-y-8 animate-slideInLeft">
                         <Card className="p-8">
                             <h2 className="text-2xl font-bold mb-4 text-foreground">WCAG Contrast Checker</h2>
                             <div className="flex flex-col gap-6">
-                                <div className="flex gap-4">
+                                <div className="flex flex-col sm:flex-row gap-4">
                                     <ColorInput label="Text Color" id="colorA" value={colorA} onChange={(e) => setColorA(e.target.value)} />
                                     <ColorInput label="Background" id="colorB" value={colorB} onChange={(e) => setColorB(e.target.value)} />
                                 </div>
-                                <div className="p-6 rounded-lg text-center" style={{ backgroundColor: colorB, color: colorA }}>
+                                <div className="p-6 rounded-xl text-center transition-colors duration-300" style={{ backgroundColor: colorB, color: colorA }}>
                                     <p className="font-bold text-2xl">Ratio: {contrastResult.ratio.toFixed(2)}</p>
                                     <div className="flex justify-center gap-6 mt-4">
                                         <span className="flex items-center gap-2">
@@ -135,7 +135,7 @@ const ColorToolsPage = () => {
                                     id="simulation-type"
                                     value={simulationType}
                                     onChange={e => setSimulationType(e.target.value)}
-                                    className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-md"
+                                    className="mt-1 block w-full px-3 py-2 bg-input border border-border rounded-lg shadow-sm"
                                 >
                                     <option value="none">None (Normal Vision)</option>
                                     <option value="protanopia">Protanopia (Red-Blind)</option>
@@ -145,19 +145,19 @@ const ColorToolsPage = () => {
                                 </select>
                             </div>
                             <div
-                                className="mt-4 p-4 border border-border rounded-lg"
+                                className="mt-4 p-4 border-2 border-dashed border-border rounded-xl transition-all duration-300"
                                 style={{ filter: simulationType !== 'none' ? `url(#${simulationType})` : 'none' }}
                             >
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2 justify-center">
                                     {palette.map((color, index) => (
-                                        <div key={index} className="h-16 w-16 rounded-md border-2 border-border" style={{ backgroundColor: color }} />
+                                        <div key={index} className="h-16 w-16 rounded-xl border-2 border-border transition-all duration-300" style={{ backgroundColor: color }} />
                                     ))}
                                 </div>
                             </div>
                         </Card>
                     </div>
 
-                    <div>
+                    <div className="animate-slideInRight">
                         <Card className="p-8 sticky top-28">
                             <h2 className="text-2xl font-bold mb-4 text-foreground">Palette Builder</h2>
                             <div className="space-y-4">
@@ -170,10 +170,13 @@ const ColorToolsPage = () => {
                                     </div>
                                 ))}
                             </div>
-                            <Button onClick={addColorToPalette} variant="secondary" className="mt-6">Add Color</Button>
+                            <Button onClick={addColorToPalette} variant="secondary" className="mt-6">
+                                <PlusIcon className="h-5 w-5 mr-2" />
+                                Add Color
+                            </Button>
                             <div className="mt-8 border-t border-border pt-6">
-                                <Label htmlFor="palette-name">Palette Name</Label>
-                                <div className="flex gap-4 mt-1">
+                                <Label htmlFor="palette-name">Save Current Palette</Label>
+                                <div className="flex flex-col sm:flex-row gap-4 mt-1">
                                     <Input id="palette-name" type="text" value={paletteName} onChange={(e) => setPaletteName(e.target.value)} placeholder="e.g., Brand Colors" />
                                     <Button onClick={handleSavePalette} disabled={!paletteName.trim()}>Save</Button>
                                 </div>
