@@ -91,7 +91,7 @@ const TextDiffPage = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto animate-fadeIn">
             <h1 className="text-4xl font-bold mb-2 text-foreground">Text Difference Checker</h1>
             <p className="text-muted-foreground mb-8">Compare two pieces of text to see what's changed. Your comparisons are saved automatically.</p>
 
@@ -101,13 +101,13 @@ const TextDiffPage = () => {
                         value={textA}
                         onChange={(e) => setTextA(e.target.value)}
                         placeholder="Paste the original text here..."
-                        className="w-full h-80 p-4 bg-input border border-border rounded-md focus:ring-ring focus:border-primary resize-none font-mono text-sm"
+                        className="w-full h-80 p-4 bg-input border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-primary resize-none font-mono text-sm transition-colors"
                     />
                     <textarea
                         value={textB}
                         onChange={(e) => setTextB(e.target.value)}
                         placeholder="Paste the changed text here..."
-                        className="w-full h-80 p-4 bg-input border border-border rounded-md focus:ring-ring focus:border-primary resize-none font-mono text-sm"
+                        className="w-full h-80 p-4 bg-input border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-primary resize-none font-mono text-sm transition-colors"
                     />
                 </div>
                 <div className="mt-6 flex flex-wrap items-end gap-4">
@@ -123,7 +123,7 @@ const TextDiffPage = () => {
                             id="language-select"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
-                            className="mt-1 block w-full sm:w-48 px-3 py-2 bg-input border border-border rounded-md"
+                            className="mt-1 block w-full sm:w-48 px-3 py-2 bg-input border border-border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
                         >
                             <option value="plaintext">Plain Text</option>
                             <option value="javascript">JavaScript</option>

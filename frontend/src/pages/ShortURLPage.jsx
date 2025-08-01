@@ -98,14 +98,20 @@ const ShortURLPage = () => {
         }
     };
 
-    const getTodayString = () => new Date().toISOString().split('T')[0];
+    const getTodayString = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     return (
         <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl font-bold mb-2 text-foreground">URL Shortener</h1>
             <p className="text-muted-foreground mb-8">Create short, memorable links in seconds.</p>
 
-            <Card className="p-8">
+            <Card className="p-8 animate-fadeIn">
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <Label htmlFor="long-url">Enter a long URL</Label>
@@ -141,8 +147,8 @@ const ShortURLPage = () => {
                         </div>
                     </div>
                     <div className="mt-6">
-                        <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
-                            {isLoading ? 'Shortening...' : 'Shorten'}
+                        <Button type="submit" isLoading={isLoading} className="w-full sm:w-auto">
+                            Shorten
                         </Button>
                     </div>
                 </form>

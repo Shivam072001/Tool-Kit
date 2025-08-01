@@ -28,13 +28,13 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-background">
-            <Card className="p-8 w-full max-w-md shadow-2xl">
-                <h2 className="text-2xl font-bold mb-6 text-center text-foreground">Login</h2>
+        <div className="flex items-center justify-center min-h-screen bg-background p-4">
+            <Card className="p-8 w-full max-w-md shadow-2xl animate-fadeIn">
+                <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Welcome Back</h2>
                 <AuthForm formType="login" onSubmit={handleLogin} error={error} isLoading={isLoading} />
                 <p className="mt-6 text-center text-sm text-muted-foreground">
                     Don't have an account?{' '}
-                    <Link to="/register" className="font-medium text-primary hover:underline">
+                    <Link to="/register" className="font-medium text-primary hover:underline transition-colors">
                         Register
                     </Link>
                 </p>

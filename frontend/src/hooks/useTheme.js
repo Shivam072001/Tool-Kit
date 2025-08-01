@@ -10,6 +10,7 @@ export const themeList = [
     { name: 'Pink & Teal', id: 'pink-teal-cream' },
     { name: 'Orange & Yellow', id: 'orange-yellow' },
     { name: 'Blue & Mint', id: 'blue-mint' },
+    { name: 'Purple & Amber', id: 'purple-amber' },
 ];
 
 export const ThemeProvider = ({ children }) => {
