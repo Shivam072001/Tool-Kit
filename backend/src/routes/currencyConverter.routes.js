@@ -8,6 +8,8 @@ import {
     getCurrencyRates,
     saveConversion,
 } from "../controllers/currencyConverter.controller.js";
+import { validate } from "../middlewares/validation.middleware.js";
+import { saveConversionSchema } from "../validations/currencyConverter.validation.js";
 
 const router = express.Router();
 
@@ -16,7 +18,7 @@ router.use(protect);
 
 router.get("/list", getCurrencyRates);
 
-router.route("/history").post(saveConversion).get(getConversionHistory);
+router.route("/history").post(validate(saveConversionSchema), saveConversion).get(getConversionHistory);
 router.route('/history/:id').delete(deleteCurrencyConversion);
 
 export { router as currencyConverterRoutes };

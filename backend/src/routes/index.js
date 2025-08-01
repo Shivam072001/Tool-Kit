@@ -2,7 +2,7 @@ import express from 'express';
 import { AppError } from '../utils/AppError.js';
 import { authRoutes } from './auth.routes.js';
 import { shortUrlRoutes } from './shortUrl.routes.js';
-import { qrCodeRoutes } from './qrcode.routes.js';
+import { qrCodeRoutes } from './qrCode.routes.js';
 import { passwordVaultRoutes } from './passwordVault.routes.js';
 import { secureShareRoutes } from './secureShare.routes.js';
 import { currencyConverterRoutes } from './currencyConverter.routes.js';

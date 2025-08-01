@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { secureShareRepository } from '../repositories/secureShare.repository.js';
 import { userRepository } from '../repositories/user.repository.js';
 import { AppError } from '../utils/AppError.js';
-import { encrypt, decrypt } from '../utils/secureShareCrypto.js';
+import { encrypt, decrypt } from '../utils/SecureShareCrypto.js';
 
 class SecureShareService {
     async createShare(sharerId, recipientEmail, passwordItem, expiresIn) {
