@@ -129,9 +129,6 @@ const PasswordList = ({ vault, setVault, masterPassword, salt }) => {
                                     <button onClick={() => copyToClipboard(item.password)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title="Copy password">
                                         <ClipboardDocumentIcon className="h-5 w-5" />
                                     </button>
-                                    <button onClick={() => handleDeleteItem(item.id)} className="p-2 text-muted-foreground hover:text-destructive rounded-full" title="Delete item">
-                                        <TrashIcon className="h-5 w-5" />
-                                    </button>
                                     <button onClick={() => handleShare(item)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title="Share password securely">
                                         <ShareIcon className="h-5 w-5" />
                                     </button>

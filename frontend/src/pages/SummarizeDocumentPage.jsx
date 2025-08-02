@@ -1,58 +1,27 @@
 // frontend/src/pages/DocumentSummarizerPage.jsx
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import Dropzone from '../components/molecules/Dropzone';
 import Card from '../components/atoms/Card';
 import Button from '../components/atoms/Button';
 import Spinner from '../components/atoms/Spinner';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/solid';
 import { textService } from '../services/textService';
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from '../constants';
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import { OPERATION_STATUSES } from '../constants';
+import { useTaskPoller } from '../hooks/useTaskPoller';
 
 const DocumentSummarizerPage = () => {
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState('idle');
     const [taskId, setTaskId] = useState(null);
-    const [summaryText, setSummaryText] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-
-    // Polling logic, adapted for a text result
-    useEffect(() => {
-        let interval;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            interval = setInterval(async () => {
-                try {
-                    const data = await textService.checkJobStatus(taskId);
-                    if (data.status === OPERATION_STATUSES.COMPLETED) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        setSummaryText(data.resultText);
-                        clearInterval(interval);
-                    } else if (data.status === OPERATION_STATUSES.FAILED) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.errorMessage || 'Summarization failed.');
-                        clearInterval(interval);
-                    }
-                } catch (err) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage('Could not retrieve job status.');
-                    clearInterval(interval);
-                }
-            }, POLLING_INTERVAL);
-        }
-        return () => clearInterval(interval);
-    }, [status, taskId]);
+    const { status, result: summaryText, errorMessage, setStatus } = useTaskPoller(taskId, textService.checkJobStatus);
 
     const handleDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             setFile(acceptedFiles[0]);
             setStatus('idle');
-            setErrorMessage('');
-            setSummaryText('');
             setTaskId(null);
         }
-    }, []);
+    }, [setStatus]);
 
     const handleSummarize = async () => {
         if (!file) return;
@@ -62,12 +31,13 @@ const DocumentSummarizerPage = () => {
             setTaskId(data.taskId);
         } catch (err) {
             setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || 'Upload failed.');
         }
     };
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(summaryText);
+        if (summaryText) {
+            navigator.clipboard.writeText(summaryText);
+        }
     };
 
     return (

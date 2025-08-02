@@ -1,57 +1,79 @@
-# python_services/ai_handler/api/views.py
-
-import os
-from uuid import uuid4
-from django.core.files.storage import default_storage
-from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from file_handler.api.serializers import ImageUploadSerializer # Reusable for any file
-from ..tasks import remove_background_task, summarize_document_task
+from celery.result import AsyncResult
+
+from .tasks import remove_background_task, summarize_document_task, check_grammar_task
+from .serializers import ImageUploadSerializer, FileUploadSerializer, TextSerializer
 
 class BackgroundRemovalView(APIView):
     """
-    (Existing, unmodified view)
-    """
-    def post(self, request, *args, **kwargs):
-        # ... existing code ...
-        task = remove_background_task.delay(input_path_full, output_filename)
-        return Response({'task_id': task.id}, status=status.HTTP_202_ACCEPTED)
-
-class DocumentSummarizerView(APIView):
-    """
-    (New view)
-    Handles file upload and dispatches the summarization task.
+    API view to handle requests for removing background from an image.
     """
     def post(self, request, *args, **kwargs):
         serializer = ImageUploadSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid():
+            image_file = serializer.validated_data['image']
 
-        document_file = serializer.validated_data['image'] # field name is 'image'
+            # Save the file temporarily to pass its path to the task
+            # In a production system, this would be handled by a storage service like S3.
+            from django.core.files.storage import default_storage
+            file_name = default_storage.save(image_file.name, image_file)
 
-        temp_filename = f"{uuid4()}_{document_file.name}"
-        temp_path = default_storage.save(os.path.join('uploads', temp_filename), document_file)
-        input_path_full = os.path.join(settings.MEDIA_ROOT, temp_path)
+            task = remove_background_task.delay(file_name)
+            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        task = summarize_document_task.delay(input_path_full, document_file.name)
+class DocumentSummarizerView(APIView):
+    """
+    API view to handle requests for summarizing a document.
+    """
+    def post(self, request, *args, **kwargs):
+        # CORRECTED: Uses the generic FileUploadSerializer instead of ImageUploadSerializer
+        serializer = FileUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            doc_file = serializer.validated_data['file']
 
-        return Response({'task_id': task.id}, status=status.HTTP_202_ACCEPTED)
+            from django.core.files.storage import default_storage
+            file_name = default_storage.save(doc_file.name, doc_file)
+
+            task = summarize_document_task.delay(file_name)
+            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GrammarCheckerView(APIView):
     """
-    (New view)
-    Accepts text and dispatches a grammar checking task.
+    API view to handle requests for checking grammar in a block of text.
     """
     def post(self, request, *args, **kwargs):
-        serializer = TextSubmissionSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # IMPLEMENTED: Uses the new TextSerializer
+        serializer = TextSerializer(data=request.data)
+        if serializer.is_valid():
+            text = serializer.validated_data['text']
+            task = check_grammar_task.delay(text)
+            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        text_content = serializer.validated_data['text']
+class TaskStatusView(APIView):
+    """
+    API view to check the status of a Celery task.
+    """
+    def get(self, request, task_id, *args, **kwargs):
+        task_result = AsyncResult(task_id)
+        result = {
+            "taskId": task_id,
+            "status": task_result.status,
+            "result": task_result.result if task_result.ready() else None,
+        }
 
-        # Dispatch the grammar check task. Note this is a text-based task.
-        task = check_grammar_task.delay(text_content)
+        # Customize result shape for frontend convenience
+        if task_result.status == 'SUCCESS':
+            if isinstance(task_result.result, str) and (task_result.result.startswith('http') or task_result.result.startswith('/media')):
+                 result['resultUrl'] = task_result.result
+            else:
+                 result['resultText'] = task_result.result
 
-        return Response({'task_id': task.id}, status=status.HTTP_202_ACCEPTED)
+        elif task_result.status == 'FAILURE':
+            result['errorMessage'] = str(task_result.result)
+
+        return Response(result, status=status.HTTP_200_OK)

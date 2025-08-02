@@ -15,9 +15,8 @@ import Spinner from "../components/atoms/Spinner";
 import { audioService } from "../services/audioService";
 import ConfirmDeleteModal from "../components/organisms/ConfirmDeleteModal";
 import AudioHistoryList from "../components/organisms/AudioHistoryList";
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from "../constants";
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import { OPERATION_STATUSES } from "../constants";
+import { useTaskPoller } from "../hooks/useTaskPoller";
 
 const VoiceToTextPage = () => {
     const [activeTab, setActiveTab] = useState("realtime");
@@ -31,16 +30,15 @@ const VoiceToTextPage = () => {
     } = useSpeechRecognition();
 
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState("idle");
     const [taskId, setTaskId] = useState(null);
-    const [resultText, setResultText] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [history, setHistory] = useState([]);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState({ id: null, name: "" });
     const [isDeleting, setIsDeleting] = useState(false);
     const [copied, setCopied] = useState(false);
+    const { status, result: resultText, errorMessage, setStatus } = useTaskPoller(taskId, audioService.checkJobStatus);
+
 
     const fetchHistory = useCallback(async () => {
         try {
@@ -58,39 +56,17 @@ const VoiceToTextPage = () => {
     }, [activeTab, fetchHistory]);
 
     useEffect(() => {
-        let interval;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            interval = setInterval(async () => {
-                try {
-                    const { data } = await audioService.checkJobStatus(taskId);
-                    if (data.status === OPERATION_STATUSES.COMPLETED) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        setResultText(data.resultText);
-                        await fetchHistory();
-                        clearInterval(interval);
-                    } else if (data.status === OPERATION_STATUSES.FAILED) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.errorMessage || "Transcription failed.");
-                        clearInterval(interval);
-                    }
-                } catch (error) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage("Could not retrieve job status.");
-                    clearInterval(interval);
-                }
-            }, POLLING_INTERVAL);
+        if (status === OPERATION_STATUSES.SUCCESS) {
+            fetchHistory();
         }
-        return () => clearInterval(interval);
-    }, [status, taskId, fetchHistory]);
+    }, [status, fetchHistory]);
 
     const handleDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             setFile(acceptedFiles[0]);
             setStatus("idle");
-            setResultText("");
-            setErrorMessage("");
         }
-    }, []);
+    }, [setStatus]);
 
     const handleTranscribeFile = async () => {
         if (!file) return;
@@ -100,7 +76,6 @@ const VoiceToTextPage = () => {
             setTaskId(data.taskId);
         } catch (err) {
             setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || "Upload failed.");
         }
     };
 

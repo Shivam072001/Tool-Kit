@@ -10,100 +10,60 @@ import {
     CheckCircleIcon,
     XCircleIcon,
     DocumentArrowDownIcon,
-    PhotoIcon,
-    PaintBrushIcon,
 } from "@heroicons/react/24/solid";
 import Input from "../components/atoms/Input";
 import Label from "../components/atoms/Label";
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from "../constants";
-import { config } from "../config/env";
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import { OPERATION_STATUSES } from "../constants";
+import { useTaskPoller } from "../hooks/useTaskPoller";
 
 const BackgroundRemoverPage = () => {
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState("idle");
     const [taskId, setTaskId] = useState(null);
-    const [resultUrl, setResultUrl] = useState(null);
-    const [errorMessage, setErrorMessage] = useState("");
     const [originalImageUrl, setOriginalImageUrl] = useState(null);
-
-    // New state for background customization
     const [bgColor, setBgColor] = useState('#ffffff');
     const [bgImage, setBgImage] = useState(null);
     const canvasRef = useRef(null);
+    const { status, result: resultUrl, errorMessage, setStatus } = useTaskPoller(taskId, fileService.checkJobStatus);
 
-    // This effect will draw the final image on the canvas whenever the result or background changes
     useEffect(() => {
         if (status === OPERATION_STATUSES.SUCCESS && resultUrl && canvasRef.current) {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext('2d');
             const foreground = new Image();
-            foreground.crossOrigin = "anonymous"; // Handle potential CORS issues if URLs are from different origins
+            foreground.crossOrigin = "anonymous";
 
             foreground.onload = () => {
                 canvas.width = foreground.naturalWidth;
                 canvas.height = foreground.naturalHeight;
 
-                // Draw background first
                 if (bgImage) {
                     const background = new Image();
                     background.crossOrigin = "anonymous";
                     background.onload = () => {
                         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(foreground, 0, 0); // Draw foreground on top
+                        ctx.drawImage(foreground, 0, 0);
                     };
                     background.src = URL.createObjectURL(bgImage);
                 } else {
                     ctx.fillStyle = bgColor;
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(foreground, 0, 0); // Draw foreground on top
+                    ctx.drawImage(foreground, 0, 0);
                 }
             };
             foreground.src = resultUrl;
         }
     }, [status, resultUrl, bgColor, bgImage]);
 
-
-    // Polling logic is identical to other pages
-    useEffect(() => {
-        let interval;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            interval = setInterval(async () => {
-                try {
-                    const { data } = await fileService.checkJobStatus(taskId);
-                    if (data.status === OPERATION_STATUSES.COMPLETED) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        // Construct full URL for the result image
-                        setResultUrl(`${config.computeServiceUrl}${data.result.fileUrl}`);
-                        clearInterval(interval);
-                    } else if (data.status === OPERATION_STATUSES.FAILED) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.errorMessage || "Background removal failed.");
-                        clearInterval(interval);
-                    }
-                } catch (err) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage("Could not retrieve job status.");
-                    clearInterval(interval);
-                }
-            }, POLLING_INTERVAL);
-        }
-        return () => clearInterval(interval);
-    }, [status, taskId]);
-
     const handleDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             const currentFile = acceptedFiles[0];
             setFile(currentFile);
-            setOriginalImageUrl(URL.createObjectURL(currentFile)); // Create a URL for preview
+            setOriginalImageUrl(URL.createObjectURL(currentFile));
             setStatus("idle");
-            setErrorMessage("");
-            setResultUrl(null);
             setTaskId(null);
             setBgImage(null);
         }
-    }, []);
+    }, [setStatus]);
 
     const handleBgImageDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
@@ -119,7 +79,6 @@ const BackgroundRemoverPage = () => {
             setTaskId(data.taskId);
         } catch (err) {
             setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || "Upload failed.");
         }
     };
 
@@ -136,11 +95,10 @@ const BackgroundRemoverPage = () => {
     const handleReset = () => {
         setFile(null);
         setStatus("idle");
-        setResultUrl(null);
-        setErrorMessage("");
         setOriginalImageUrl(null);
         setBgImage(null);
         setBgColor('#ffffff');
+        setTaskId(null);
     };
 
     return (

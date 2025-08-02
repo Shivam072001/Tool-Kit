@@ -8,84 +8,47 @@ import Button from '../components/atoms/Button';
 import Spinner from '../components/atoms/Spinner';
 import { CheckCircleIcon, XCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/solid';
 import Label from '../components/atoms/Label';
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from '../constants';
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import { OPERATION_STATUSES } from '../constants';
+import { useTaskPoller } from '../hooks/useTaskPoller';
 
 const FileConverterPage = () => {
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState('idle');
     const [taskId, setTaskId] = useState(null);
-    const [resultUrl, setResultUrl] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('');
     const [outputFormat, setOutputFormat] = useState('');
     const [possibleConversions, setPossibleConversions] = useState([]);
-
-    // State for the dynamically fetched conversion options
     const [conversionMap, setConversionMap] = useState({});
     const [acceptedFiles, setAcceptedFiles] = useState({});
+    const { status, result: resultUrl, errorMessage, setStatus } = useTaskPoller(taskId, fileService.checkJobStatus);
 
-    // Fetch conversion options when the component mounts
     useEffect(() => {
         const fetchOptions = async () => {
             try {
                 const response = await fileService.getConversionOptions();
                 const fetchedMap = response.data.conversionMap;
                 setConversionMap(fetchedMap);
-                // Generate the 'accept' object for the Dropzone from the keys of the map
                 const accept = Object.keys(fetchedMap).reduce((acc, mime) => {
-                    acc[mime] = []; // We don't need to specify extensions here
+                    acc[mime] = [];
                     return acc;
                 }, {});
                 setAcceptedFiles(accept);
             } catch (err) {
-                setErrorMessage('Could not load conversion options from the server.');
                 setStatus(OPERATION_STATUSES.ERROR);
             }
         };
         fetchOptions();
-    }, []);
-
-    // Polling logic remains the same
-    useEffect(() => {
-        let interval;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            interval = setInterval(async () => {
-                try {
-                    const data = await fileService.checkJobStatus(taskId);
-                    if (data.status === OPERATION_STATUSES.COMPLETED) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        setResultUrl(data.resultUrl);
-                        clearInterval(interval);
-                    } else if (data.status === OPERATION_STATUSES.FAILED) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.errorMessage || 'Conversion failed.');
-                        clearInterval(interval);
-                    }
-                } catch (err) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage('Could not retrieve job status.');
-                    clearInterval(interval);
-                }
-            }, POLLING_INTERVAL);
-        }
-        return () => clearInterval(interval);
-    }, [status, taskId]);
+    }, [setStatus]);
 
     const handleDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             const selectedFile = acceptedFiles[0];
             setFile(selectedFile);
-            // Use the fetched conversionMap to determine possible conversions
             const conversions = conversionMap[selectedFile.type] || [];
             setPossibleConversions(conversions);
             setOutputFormat(conversions[0] || '');
             setStatus('idle');
-            setErrorMessage('');
-            setResultUrl(null);
             setTaskId(null);
         }
-    }, [conversionMap]); // Add conversionMap as a dependency
+    }, [conversionMap, setStatus]);
 
     const handleConvert = async () => {
         if (!file || !outputFormat) return;
@@ -95,7 +58,6 @@ const FileConverterPage = () => {
             setTaskId(data.taskId);
         } catch (err) {
             setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || 'Upload failed.');
         }
     };
 

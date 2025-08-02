@@ -1,96 +1,93 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { fileService } from '../services/fileService';
-import Dropzone from '../components/molecules/Dropzone';
-import Card from '../components/atoms/Card';
-import Button from '../components/atoms/Button';
-import Spinner from '../components/atoms/Spinner';
-import { CheckCircleIcon, XCircleIcon, DocumentArrowDownIcon } from '@heroicons/react/24/solid';
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS, RESPONSE_STATUS } from '../constants';
-import { config } from '../config/env';
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import React, { useState, useCallback, useEffect } from "react";
+import { fileService } from "../services/fileService";
+import Dropzone from "../components/molecules/Dropzone";
+import Card from "../components/atoms/Card";
+import Button from "../components/atoms/Button";
+import Spinner from "../components/atoms/Spinner";
+import {
+    CheckCircleIcon,
+    XCircleIcon,
+    DocumentArrowDownIcon,
+} from "@heroicons/react/24/solid";
+import { OPERATION_STATUSES } from "../constants";
+import { useTaskPoller } from "../hooks/useTaskPoller";
 
 const acceptedFiles = {
-    'image/jpeg': ['.jpg', '.jpeg'],
-    'image/png': ['.png'],
-    'image/webp': ['.webp'],
-    'application/pdf': ['.pdf'],
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+    "image/jpeg": [".jpg", ".jpeg"],
+    "image/png": [".png"],
+    "image/webp": [".webp"],
+    "application/pdf": [".pdf"],
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+        ".docx",
+    ],
 };
 
 const FileCompressorPage = () => {
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState('idle');
+    const [uiStatus, setUiStatus] = useState("idle");
     const [progress, setProgress] = useState(0);
     const [taskId, setTaskId] = useState(null);
-    const [resultUrl, setResultUrl] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('');
+
+    const {
+        status: taskStatus,
+        result: resultUrl,
+        errorMessage,
+        setStatus: setTaskStatus,
+    } = useTaskPoller(taskId, fileService.checkJobStatus);
 
     useEffect(() => {
-        let intervalId;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            intervalId = setInterval(async () => {
-                try {
-                    const data = await fileService.checkJobStatus(taskId);
-                    if (data.status === RESPONSE_STATUS.SUCCESS) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        setResultUrl(`${config.computeServiceUrl}/media/${data.result}`);
-                        clearInterval(intervalId);
-                    } else if (data.status === RESPONSE_STATUS.FAILURE) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.error || 'Compression failed on the server.');
-                        clearInterval(intervalId);
-                    }
-                } catch (err) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage('Could not retrieve job status.');
-                    clearInterval(intervalId);
-                }
-            }, POLLING_INTERVAL);
+        if (
+            taskStatus === OPERATION_STATUSES.SUCCESS ||
+            taskStatus === OPERATION_STATUSES.ERROR
+        ) {
+            setUiStatus(taskStatus);
         }
-        return () => clearInterval(intervalId);
-    }, [status, taskId]);
+    }, [taskStatus]);
 
     const handleDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             setFile(acceptedFiles[0]);
-            setStatus('idle');
-            setErrorMessage('');
+            setUiStatus("idle");
             setProgress(0);
-            setResultUrl(null);
+            setTaskId(null);
         }
-    }, [])
-
+    }, []);
 
     const handleUpload = async () => {
         if (!file) return;
-        setStatus('uploading');
+        setUiStatus("uploading");
         try {
-            const data = await fileService.uploadForCompression(file, (e) => setProgress(Math.round((100 * e.loaded) / e.total)));
+            const data = await fileService.uploadForCompression(file, (e) =>
+                setProgress(Math.round((100 * e.loaded) / e.total))
+            );
             setTaskId(data.taskId);
-            setStatus(OPERATION_STATUSES.PROCESSING);
+            setUiStatus(OPERATION_STATUSES.PROCESSING);
         } catch (err) {
-            setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || 'Upload failed.');
+            setUiStatus(OPERATION_STATUSES.ERROR);
+            setTaskStatus(OPERATION_STATUSES.ERROR);
         }
     };
 
     const handleReset = () => {
         setFile(null);
-        setStatus('idle');
-        setErrorMessage('');
+        setUiStatus("idle");
         setProgress(0);
-        setResultUrl(null);
+        setTaskId(null);
     };
 
     const renderStatus = () => {
-        switch (status) {
-            case 'uploading':
+        switch (uiStatus) {
+            case "uploading":
                 return (
                     <div className="mt-6">
-                        <p className="text-center text-foreground mb-2">Uploading: {progress}%</p>
+                        <p className="text-center text-foreground mb-2">
+                            Uploading: {progress}%
+                        </p>
                         <div className="w-full bg-border rounded-full h-2.5">
-                            <div className="bg-primary h-2.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
+                            <div
+                                className="bg-primary h-2.5 rounded-full transition-all duration-300"
+                                style={{ width: `${progress}%` }}
+                            ></div>
                         </div>
                     </div>
                 );
@@ -98,7 +95,9 @@ const FileCompressorPage = () => {
                 return (
                     <div className="mt-6 flex flex-col items-center gap-4 py-10">
                         <Spinner />
-                        <p className="text-muted-foreground animate-pulse">Processing... Please wait.</p>
+                        <p className="text-muted-foreground animate-pulse">
+                            Processing... Please wait.
+                        </p>
                     </div>
                 );
             case OPERATION_STATUSES.SUCCESS:
@@ -106,7 +105,11 @@ const FileCompressorPage = () => {
                     <div className="mt-6 text-center bg-primary/10 p-6 rounded-xl animate-fadeIn">
                         <CheckCircleIcon className="h-12 w-12 text-primary mx-auto mb-4" />
                         <p className="text-primary font-bold mb-4">Compression Complete!</p>
-                        <a href={resultUrl} download className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground font-bold rounded-full hover:opacity-90 transition-colors">
+                        <a
+                            href={resultUrl}
+                            download
+                            className="inline-flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground font-bold rounded-full hover:opacity-90 transition-colors"
+                        >
                             <DocumentArrowDownIcon className="h-5 w-5" />
                             Download Compressed File
                         </a>
@@ -123,21 +126,26 @@ const FileCompressorPage = () => {
             default:
                 return null;
         }
-    }
-
+    };
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">File Compressor</h1>
-            <p className="text-muted-foreground mb-8">Reduce file sizes for images, PDFs, and documents.</p>
+            <h1 className="text-4xl font-bold mb-2 text-foreground">
+                File Compressor
+            </h1>
+            <p className="text-muted-foreground mb-8">
+                Reduce file sizes for images, PDFs, and documents.
+            </p>
 
             <Card className="p-8">
-                {status === 'idle' ? (
+                {uiStatus === "idle" ? (
                     <>
                         <Dropzone onDrop={handleDrop} accept={acceptedFiles} />
                         {file && (
                             <div className="mt-6 text-center">
-                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <p className="text-foreground">
+                                    Selected: <span className="font-medium">{file.name}</span>
+                                </p>
                                 <Button onClick={handleUpload} className="mt-4">
                                     Compress File
                                 </Button>
@@ -148,9 +156,11 @@ const FileCompressorPage = () => {
                     renderStatus()
                 )}
 
-                {(status !== 'idle') && (
+                {uiStatus !== "idle" && (
                     <div className="mt-6 text-center">
-                        <Button onClick={handleReset} variant="ghost">Start Over</Button>
+                        <Button onClick={handleReset} variant="ghost">
+                            Start Over
+                        </Button>
                     </div>
                 )}
             </Card>
