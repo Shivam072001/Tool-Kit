@@ -4,51 +4,23 @@ import React, { useState, useEffect } from 'react';
 import { textService } from '../services/textService';
 import Card from '../components/atoms/Card';
 import Button from '../components/atoms/Button';
-import Spinner from '../components/atoms/Spinner';
-import { OPERATION_STATUSES, POLLING_INTERVAL_MS } from '../constants';
+import { OPERATION_STATUSES } from '../constants';
 import { ClipboardDocumentIcon, LightBulbIcon } from '@heroicons/react/24/outline';
-
-const POLLING_INTERVAL = POLLING_INTERVAL_MS;
+import { useTaskPoller } from '../hooks/useTaskPoller';
 
 const GrammarCheckerPage = () => {
     const [text, setText] = useState('');
-    const [status, setStatus] = useState('idle');
     const [taskId, setTaskId] = useState(null);
     const [matches, setMatches] = useState([]);
-    const [errorMessage, setErrorMessage] = useState('');
     const [copied, setCopied] = useState(false);
-
-    const resetState = () => {
-        setStatus('idle');
-        setTaskId(null);
-        setMatches([]);
-        setErrorMessage('');
-    };
+    const { status, result, errorMessage, setStatus } = useTaskPoller(taskId, textService.checkJobStatus);
 
     useEffect(() => {
-        let interval;
-        if (status === OPERATION_STATUSES.PROCESSING && taskId) {
-            interval = setInterval(async () => {
-                try {
-                    const data = await textService.checkJobStatus(taskId);
-                    if (data.status === OPERATION_STATUSES.COMPLETED) {
-                        setStatus(OPERATION_STATUSES.SUCCESS);
-                        setMatches(Array.isArray(data.result) ? data.result : JSON.parse(data.resultText));
-                        clearInterval(interval);
-                    } else if (data.status === OPERATION_STATUSES.FAILED) {
-                        setStatus(OPERATION_STATUSES.ERROR);
-                        setErrorMessage(data.errorMessage || 'Grammar check failed.');
-                        clearInterval(interval);
-                    }
-                } catch (err) {
-                    setStatus(OPERATION_STATUSES.ERROR);
-                    setErrorMessage('Could not retrieve job status.');
-                    clearInterval(interval);
-                }
-            }, POLLING_INTERVAL);
+        if (status === OPERATION_STATUSES.SUCCESS && result) {
+            setMatches(Array.isArray(result) ? result : JSON.parse(result));
         }
-        return () => clearInterval(interval);
-    }, [status, taskId]);
+    }, [status, result]);
+
 
     const handleCheckGrammar = async () => {
         if (!text.trim()) return;
@@ -58,7 +30,6 @@ const GrammarCheckerPage = () => {
             setTaskId(data.taskId);
         } catch (err) {
             setStatus(OPERATION_STATUSES.ERROR);
-            setErrorMessage(err.response?.data?.message || 'Submission failed.');
         }
     };
 
@@ -144,7 +115,7 @@ const GrammarCheckerPage = () => {
                 <Button onClick={handleCheckGrammar} isLoading={status === OPERATION_STATUSES.PROCESSING} disabled={!text.trim()}>
                     Check Grammar
                 </Button>
-                <Button onClick={() => { setText(''); resetState(); }} variant="ghost">Clear</Button>
+                <Button onClick={() => { setText(''); setStatus('idle'); setTaskId(null); }} variant="ghost">Clear</Button>
                 <Button onClick={copyToClipboard} variant="ghost" className="ml-auto">
                     <ClipboardDocumentIcon className="h-5 w-5 mr-2" /> {copied ? 'Copied!' : 'Copy Text'}
                 </Button>
