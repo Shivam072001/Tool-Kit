@@ -14,6 +14,7 @@ import { colorPaletteRoutes } from './colorPalette.routes.js';
 import { temporaryEmailRoutes } from './temporaryEmail.routes.js';
 import { metadataOperationRoutes } from './metadataOperation.routes.js';
 import { regexRoutes } from './regexPattern.routes.js';
+import { redirect } from '../controllers/redirect.controller.js';
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.use('/api/text', textOperationRoutes);
 router.use('/api/audio', audioOperationRoutes);
 router.use('/api/qrcodes', qrCodeRoutes);
 router.use('/api/vault', passwordVaultRoutes);
-router.use('/api/shares', secureShareRoutes);
+router.use('/api/share', secureShareRoutes);
 router.use('/api/currency', currencyConverterRoutes);
 router.use('/api/text-diff', textDiffRoutes);
 router.use('/api/colors', colorPaletteRoutes);
@@ -38,7 +39,7 @@ router.get('/:code', redirect);
 router.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
 // --- Catch-all 404 Route for API ---
-router.all('/api/*', (req, res, next) => {
+router.all('/api{/*path}', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 

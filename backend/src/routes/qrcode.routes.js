@@ -9,6 +9,7 @@ import {
     enableQRCode,
 } from "../controllers/qrCode.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validation.middleware.js";
 import { createQRCodeSchema, enableQRCodeSchema } from "../validations/qrCode.validation.js";
 
 const router = express.Router();

@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { SUBSCRIPTION_TIERS } from '../constants';
+import { SUBSCRIPTION_TIERS } from '../constants/index.js';
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -56,9 +56,6 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
-
-// Add index on email for faster query performance
-userSchema.index({ email: 1 });
 
 const User = mongoose.model('User', userSchema);
 

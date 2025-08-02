@@ -1,6 +1,6 @@
 // src/models/fileProcess.model.js
 import mongoose from "mongoose";
-import { FILE_OPERATION_TYPES, OPERATION_STATUSES } from "../constants";
+import { FILE_OPERATION_TYPES, OPERATION_STATUSES } from "../constants/index.js";
 
 const fileDetailSchema = new mongoose.Schema(
     {

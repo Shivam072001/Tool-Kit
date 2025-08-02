@@ -1,17 +1,17 @@
 import { AppError } from '../utils/AppError.js';
 
-export const handleRedirect = async (req, res, next) => {
+export const redirect = async (req, res, next) => {
     const { code } = req.params;
     const { redirect } = req.query;
 
     try {
         switch (redirect) {
             case 'qr':
-                const qrUrl = await trackScanAndGetUrl(code);
+                const qrUrl = await trackQRCodeScan(code);
                 return res.redirect(307, qrUrl);
 
             default:
-                const originalUrl = await getOriginalUrl(code);
+                const originalUrl = await redirectToOriginalUrl(code);
                 return res.redirect(301, originalUrl);
         }
     } catch (error) {
