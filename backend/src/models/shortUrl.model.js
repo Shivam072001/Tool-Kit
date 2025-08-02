@@ -45,8 +45,6 @@ const shortUrlSchema = new mongoose.Schema({
     },
 });
 
-// Indexing the shortCode is critical for fast redirection performance
-shortUrlSchema.index({ shortCode: 1 });
 shortUrlSchema.index({ user: 1 }); // Index for fetching a user's URLs
 
 const ShortUrl = mongoose.model('ShortUrl', shortUrlSchema);
