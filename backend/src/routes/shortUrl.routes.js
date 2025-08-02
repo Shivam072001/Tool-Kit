@@ -7,6 +7,7 @@ import {
     enableShortUrl,
 } from "../controllers/shortUrl.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validation.middleware.js";
 import { createShortUrlSchema, enableShortUrlSchema } from "../validations/shortUrl.validation.js";
 const router = express.Router();
 

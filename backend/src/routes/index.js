@@ -14,6 +14,7 @@ import { colorPaletteRoutes } from './colorPalette.routes.js';
 import { temporaryEmailRoutes } from './temporaryEmail.routes.js';
 import { metadataOperationRoutes } from './metadataOperation.routes.js';
 import { regexRoutes } from './regexPattern.routes.js';
+import { redirect } from '../controllers/redirect.controller.js';
 
 const router = express.Router();
 

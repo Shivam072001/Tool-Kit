@@ -7,12 +7,11 @@ import {
     uploadAndRemoveBackground,
     getJobStatus,
     deleteFileOperation,
-    getConversionOptions, // <-- Import new controller
+    getConversionOptions,
 } from "../controllers/fileOperation.controller.js";
 
 const router = express.Router();
 
-// All file routes are protected
 router.use(protect);
 
 router.get("/convert/options", getConversionOptions);

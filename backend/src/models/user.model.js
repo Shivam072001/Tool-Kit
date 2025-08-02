@@ -2,7 +2,7 @@
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { SUBSCRIPTION_TIERS } from '../constants';
+import { SUBSCRIPTION_TIERS } from '../constants/index.js';
 
 const userSchema = new mongoose.Schema({
     email: {
