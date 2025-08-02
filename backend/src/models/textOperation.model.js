@@ -1,6 +1,6 @@
 // src/models/textProcess.model.js
 import mongoose from "mongoose";
-import { OPERATION_STATUSES, TEXT_OPERATION_TYPES } from "../constants";
+import { OPERATION_STATUSES, TEXT_OPERATION_TYPES } from "../constants/index.js";
 
 const textDetailSchema = new mongoose.Schema(
     { text: { type: String } },

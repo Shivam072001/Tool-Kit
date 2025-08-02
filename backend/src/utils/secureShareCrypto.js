@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { CRYPTO_DEFAULTS } from "../constants";
-import { config } from "../config/env";
+import { CRYPTO_DEFAULTS } from "../constants/index.js";
+import { config } from "../config/env.js";
 
 const {
     ALGORITHM,

@@ -1,7 +1,7 @@
 // src/models/audioProcess.model.js
 
 import mongoose from "mongoose";
-import { AUDIO_OPERATION_TYPES, OPERATION_STATUSES } from "../constants";
+import { AUDIO_OPERATION_TYPES, OPERATION_STATUSES } from "../constants/index.js";
 
 const fileDetailSchema = new mongoose.Schema(
     {
