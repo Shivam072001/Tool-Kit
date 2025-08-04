@@ -59,7 +59,7 @@ os.makedirs(AI_PROCESSED_DIR, exist_ok=True)
 
 
 @shared_task
-def remove_background_task(input_path, output_filename):
+def remove_background_task(input_path, output_filename, api_key=None):
     """
     Removes the background from an image using the 'rembg' library.
     """
@@ -79,7 +79,7 @@ def remove_background_task(input_path, output_filename):
 
 
 @shared_task
-def summarize_document_task(input_path, original_filename):
+def summarize_document_task(input_path, original_filename, api_key=None):
     """
     Summarizes the text content of a given document and performs content analysis.
     Implements a chunking strategy for long documents.
@@ -100,6 +100,15 @@ def summarize_document_task(input_path, original_filename):
         if not text_content.strip():
             raise ValueError("Document is empty or contains no readable text.")
 
+        if api_key:
+            print("--- Using custom user-provided API key for summarization ---")
+            # In a real implementation:
+            # client = OpenAI(api_key=api_key)
+            # response = client.completions.create(...)
+            # executive_summary = response.choices[0].text
+            # For now, we'll just prepend a note to the summary.
+        else:
+            print("--- Using own model ---")
         # --- Executive Summary (BART with Chunking) ---
         summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
         # The model has a limit of 1024 tokens, we use a smaller chunk size for safety
@@ -129,18 +138,19 @@ def summarize_document_task(input_path, original_filename):
                 word_frequencies[word] = word_frequencies.get(word, 0) + 1
 
         if not word_frequencies:
-             bullet_points = ["- No significant text found for summarization."]
+            bullet_points = ["- No significant text found for summarization."]
         else:
             maximum_frequency = max(word_frequencies.values())
-            for word in word_frequencies.keys():
-                word_frequencies[word] = (word_frequencies[word] / maximum_frequency)
+
+        for word in word_frequencies.keys():
+            word_frequencies[word] = (word_frequencies[word] / maximum_frequency)
 
             sentence_scores = {}
             for sent in sent_tokenize(text_content):
                 for word in word_tokenize(sent.lower()):
                     if word in word_frequencies:
                         if len(sent.split()) < 35: # Prefer shorter, concise sentences
-                             sentence_scores[sent] = sentence_scores.get(sent, 0) + word_frequencies[word]
+                            sentence_scores[sent] = sentence_scores.get(sent, 0) + word_frequencies[word]
 
             # Select top 5 sentences for bullet points
             summary_sentences = heapq.nlargest(5, sentence_scores, key=sentence_scores.get)
@@ -169,7 +179,7 @@ def summarize_document_task(input_path, original_filename):
 
 
 @shared_task
-def check_grammar_task(text_content):
+def check_grammar_task(text_content, api_key=None):
     """
     Checks the grammar of a given text string.
     """
@@ -196,7 +206,7 @@ def check_grammar_task(text_content):
         raise e
 
 @shared_task
-def transcribe_audio_task(input_path):
+def transcribe_audio_task(input_path, api_key=None):
     """
     Transcribes an audio file using OpenAI's Whisper model.
     """

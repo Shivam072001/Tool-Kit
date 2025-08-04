@@ -4,20 +4,28 @@ import axios from 'axios';
 import FormData from 'form-data';
 import fs from 'fs';
 import { textOperationRepository } from '../repositories/textOperation.repository.js';
-import { OPERATION_STATUSES, RESPONSE_STATUS, TEXT_OPERATION_TYPES } from '../constants/index.js';
+import { OPERATION_STATUSES, RESPONSE_STATUS, SUBSCRIPTION_TIERS, TEXT_OPERATION_TYPES } from '../constants/index.js';
 import { config } from '../config/env.js';
 
 const { computeServiceUrl } = config;
 
 class TextOperationService {
 
-    /**
-* Orchestrates the document summarization process.
-* (New method)
-*/
+    async _getApiKeyForUser(user, provider = 'openai') {
+        if (user.userPlan === SUBSCRIPTION_TIERS.ELITE) {
+            return await apiKeyService.getDecryptedApiKey(user._id, provider);
+        }
+        return null;
+    }
+
     async processDocumentSummarization(file, user) {
         const form = new FormData();
         form.append('image', fs.createReadStream(file.path));
+
+        const apiKey = await this._getApiKeyForUser(user);
+        if (apiKey) {
+            form.append('api_key', apiKey);
+        }
 
         try {
             const response = await axios.post(`${computeServiceUrl}/api/v1/ai/summarize-document/`, form, {
@@ -49,6 +57,10 @@ class TextOperationService {
    * (New method)
    */
     async processGrammarCheck(text, user) {
+        const apiKey = await this._getApiKeyForUser(user);
+        if (apiKey) {
+            payload.api_key = apiKey;
+        }
         try {
             const response = await axios.post(`${computeServiceUrl}/api/v1/ai/check-grammar/`, { text });
             const { task_id } = response.data;
