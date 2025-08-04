@@ -1,8 +1,6 @@
-// backend-gateway/src/controllers/error.controller.js
-
 import { config } from '../config/env.js';
-import { OPERATION_STATUSES } from '../constants/index.js';
 import { AppError } from '../utils/AppError.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
 
 
 const { nodeEnv } = config;
@@ -15,7 +13,7 @@ const handleCastErrorDB = (err) => {
 
 // Handles Mongoose Duplicate Key Error (e.g., unique email constraint)
 const handleDuplicateFieldsDB = (err) => {
-    const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+    const value = err.msg.match(/(["'])(\\?.)*?\1/)[0];
     const message = `Duplicate field value: ${value}. Please use another value.`;
     return new AppError(message, 400);
 };
@@ -35,38 +33,39 @@ const handleJWTExpiredError = () => new AppError('Your token has expired. Please
 
 // Sends detailed error response for development environment
 const sendErrorDev = (err, res) => {
-    res.status(err.statusCode).json({
-        status: err.status,
-        error: err,
-        message: err.message,
-        stack: err.stack
-    });
+    res.status(err.statusCode).json(new ApiResponse(
+        err.statusCode,
+        { error: err, stack: err.stack },
+        err.message
+    ));
 };
 
 // Sends generic, safe error response for production environment
 const sendErrorProd = (err, res) => {
     // A) For operational, trusted errors: send message to client
     if (err.isOperational) {
-        return res.status(err.statusCode).json({
-            status: err.status,
-            message: err.message
-        });
+        return res.status(err.statusCode).json(new ApiResponse(
+            err.statusCode,
+            null,
+            err.message
+        ));
     }
 
     // B) For programming or other unknown errors: don't leak error details
     // 1) Log error to the console for developers
     console.error('ERROR 💥', err);
     // 2) Send generic message to client
-    return res.status(500).json({
-        status: OPERATION_STATUSES.ERROR,
-        message: 'Something went very wrong!'
-    });
+    return res.status(500).json(new ApiResponse(
+        500,
+        null,
+        'Something went very wrong!'
+    ));
 };
 
 
 export const globalErrorHandler = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
-    err.status = err.status || OPERATION_STATUSES.ERROR;
+    err.status = err.status || 'error';
 
     if (nodeEnv === 'development') {
         sendErrorDev(err, res);

@@ -9,11 +9,13 @@ import {
 import { protect } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import { createShortUrlSchema, enableShortUrlSchema } from "../validations/shortUrl.validation.js";
+import { checkUsage } from "../middlewares/subscription.middleware.js";
+
 const router = express.Router();
 
 router.use(protect); // All routes below are protected
 
-router.route("/").post(validate(createShortUrlSchema), createShortUrl).get(getUserUrls);
+router.route("/").post(validate(createShortUrlSchema), checkUsage('tool'), createShortUrl).get(getUserUrls);
 
 router.route("/:id").delete(deleteShortUrl);
 

@@ -1,29 +1,30 @@
-// backend-gateway/src/config/db.js
-
 import mongoose from 'mongoose';
+import { logger } from '../utils/Logger.js';
+import { LEVELS } from '../constants/index.js';
+
+const { SUCCESS, INFO, WARN, ERROR } = LEVELS
 
 const connectDB = async () => {
     try {
         mongoose.connection.on('connecting', () => {
-            console.log('MongoDB | 🟡 connecting...');
+            logger.message('MongoDB | 🟡 connecting...', WARN);
         });
         mongoose.connection.on('connected', () => {
-            console.log('MongoDB | 🟢 connected successfully.');
+            logger.message('MongoDB | 🟢 connected successfully.', SUCCESS);
         });
         mongoose.connection.on('reconnected', () => {
-            console.log('MongoDB | 🔵 reconnected.');
+            logger.message('MongoDB | 🔵 reconnected.', INFO);
         });
         mongoose.connection.on('disconnected', () => {
-            console.log('MongoDB | 🔴 disconnected.');
+            logger.message('MongoDB | 🔴 disconnected.', ERROR);
         });
         mongoose.connection.on('error', (error) => {
-            console.error('MongoDB | ❌ connection error:', error);
+            logger.message('MongoDB | ❌ connection error:', ERROR);
         });
 
         await mongoose.connect(process.env.MONGO_URI, {});
     } catch (error) {
-        console.error('MongoDB | ❌ Initial connection failed:', error.message);
-        // Exit process with failure
+        logger.error('MongoDB | ❌ Initial connection failed:', { 'Error': error });
         process.exit(1);
     }
 };

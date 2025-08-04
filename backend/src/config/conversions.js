@@ -1,5 +1,3 @@
-// src/config/conversions.js
-
 export const conversionMap = {
     // PDF conversions
     'application/pdf': ['DOCX', 'PNG', 'JPEG', 'TXT'],

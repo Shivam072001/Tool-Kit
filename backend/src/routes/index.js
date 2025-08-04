@@ -1,6 +1,7 @@
 import express from 'express';
 import { AppError } from '../utils/AppError.js';
 import { authRoutes } from './auth.routes.js';
+import { planRoutes } from './plan.routes.js';
 import { shortUrlRoutes } from './shortUrl.routes.js';
 import { qrCodeRoutes } from './qrCode.routes.js';
 import { passwordVaultRoutes } from './passwordVault.routes.js';
@@ -15,11 +16,14 @@ import { temporaryEmailRoutes } from './temporaryEmail.routes.js';
 import { metadataOperationRoutes } from './metadataOperation.routes.js';
 import { regexRoutes } from './regexPattern.routes.js';
 import { redirect } from '../controllers/redirect.controller.js';
+import { apiKeyRoutes } from './apiKey.routes.js';
 
 const router = express.Router();
 
 // --- API Routes ---
 router.use('/api/auth', authRoutes);
+router.use('/api/plans', planRoutes);
+router.use('/api/keys', apiKeyRoutes);
 router.use('/api/urls', shortUrlRoutes);
 router.use('/api/files', fileOperationRoutes);
 router.use('/api/text', textOperationRoutes);

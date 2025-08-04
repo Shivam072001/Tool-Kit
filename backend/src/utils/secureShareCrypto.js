@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { CRYPTO_DEFAULTS } from "../constants/index.js";
 import { config } from "../config/env.js";
+import { logger } from "./Logger.js";
 
 const {
     ALGORITHM,
@@ -9,6 +10,7 @@ const {
     TAG_LENGTH,
     KEY_LENGTH,
     ITERATIONS,
+    HASH
 } = CRYPTO_DEFAULTS;
 
 const { secureShareSecret } = config;
@@ -33,7 +35,7 @@ export const encrypt = (data, password) => {
         salt,
         ITERATIONS,
         KEY_LENGTH,
-        "sha512"
+        HASH
     );
 
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
@@ -80,7 +82,7 @@ export const decrypt = (encryptedHex, password) => {
 
         return JSON.parse(decrypted);
     } catch (error) {
-        console.error("Decryption failed:", error);
+        logger.error("Decryption failed:", error);
         return null;
     }
 };

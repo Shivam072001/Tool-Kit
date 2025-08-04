@@ -11,12 +11,13 @@ import {
 import { protect } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validation.middleware.js";
 import { createQRCodeSchema, enableQRCodeSchema } from "../validations/qrCode.validation.js";
+import { checkUsage } from "../middlewares/subscription.middleware.js";
 
 const router = express.Router();
 
 router.use(protect);
 
-router.route("/").post(validate(createQRCodeSchema), createQRCode).get(getUserQRCodes);
+router.route("/").post(validate(createQRCodeSchema), checkUsage('tool'), createQRCode).get(getUserQRCodes);
 
 router.route("/:id").delete(deleteQRCode);
 

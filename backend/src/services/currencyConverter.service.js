@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { AppError } from '../utils/AppError.js';
 import { currencyConverterRepository } from '../repositories/currencyConverter.repository.js';
+import { logger } from '../utils/Logger.js';
 
 const cache = {
     rates: null,
@@ -27,7 +28,7 @@ class CurrencyConverterService {
             cache.lastFetch = now;
             return response.data;
         } catch (error) {
-            console.error("Failed to fetch currency rates:", error);
+            logger.error("Failed to fetch currency rates:", error);
             throw new AppError('Could not fetch latest currency rates.', 502);
         }
     }

@@ -1,0 +1,760 @@
+openapi: 3.0.3
+info:
+  title: UtilityBox API
+  description: The official and comprehensive API documentation for the UtilityBox application, a versatile toolkit for various online utilities including URL shortening, file compression, image conversion, QR code generation, and more.
+  version: 1.1.0
+  contact:
+    name: Shivam
+    url: https://github.com/shivam072001/tool-kit
+    email: shivam.verma072001@gmail.com
+tags:
+  - name: Auth
+    description: Operations related to user authentication (registration, login, logout).
+  - name: User Management
+    description: Operations for managing the user's own account and profile.
+  - name: URL Shortener
+    description: API for creating, managing, and tracking shortened URLs.
+  - name: File Operations
+    description: Endpoints for file manipulation like compression and decompression.
+  - name: Image Conversion
+    description: API for converting image formats.
+  - name: QR Code Generation
+    description: API for creating QR Codes.
+  - name: Text Analysis
+    description: Tools for analyzing and manipulating text.
+  - name: Security Tools
+    description: Utilities for generating secure credentials.
+servers:
+  - url: http://localhost:8080/api
+    description: Development Server
+  - url: https://production.utilitybox.com/api
+    description: Production Server
+components:
+  schemas:
+    # BASE SCHEMAS
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the response.
+          example: fail
+        message:
+          type: string
+          description: A human-readable error message.
+          example: Invalid input data provided.
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: array
+                items:
+                  type: string
+              message:
+                type: string
+          example:
+            - path: ["password"]
+              message: "Password must be at least 8 characters long."
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Operation completed successfully.
+
+    # AUTH & USER SCHEMAS
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+          description: The unique identifier for the user.
+        email:
+          type: string
+          format: email
+          description: The user's email address.
+        subscriptionTier:
+          type: string
+          enum: [free, pro, enterprise]
+          description: The user's subscription level.
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the user was created.
+    AuthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        token:
+          type: string
+          description: JWT authentication token.
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/User"
+    RegisterRequest:
+      type: object
+      required: [email, password, confirmPassword]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        confirmPassword:
+          type: string
+          format: password
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
+          minLength: 8
+
+    # URL SCHEMAS
+    Url:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: ObjectId
+        originalUrl:
+          type: string
+          format: url
+        shortCode:
+          type: string
+        clickCount:
+          type: integer
+          default: 0
+        maxClicks:
+          type: integer
+          nullable: true
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    CreateUrlRequest:
+      type: object
+      required: [originalUrl]
+      properties:
+        originalUrl:
+          type: string
+          format: url
+          description: The original, long URL to be shortened.
+        maxClicks:
+          type: integer
+          description: "Optional: Maximum number of clicks before the link expires."
+          nullable: true
+        expiresAt:
+          type: string
+          format: date-time
+          description: "Optional: Expiry date and time for the link."
+          nullable: true
+    UpdateUrlRequest:
+      type: object
+      properties:
+        maxClicks:
+          type: integer
+          description: "Optional: Update the maximum number of clicks."
+          nullable: true
+        expiresAt:
+          type: string
+          format: date-time
+          description: "Optional: Update the expiry date and time."
+          nullable: true
+    UrlAnalytics:
+      type: object
+      properties:
+        totalClicks:
+          type: integer
+        clicksByDay:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              count:
+                type: integer
+
+    # QR CODE SCHEMAS
+    GenerateQrRequest:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: string
+          description: The text or URL to encode in the QR code.
+          example: "https://utilitybox.com"
+        size:
+          type: integer
+          description: "The width and height of the QR code in pixels."
+          default: 200
+        foregroundColor:
+          type: string
+          description: "Hex color code for the QR code."
+          example: "#000000"
+        backgroundColor:
+          type: string
+          description: "Hex color code for the background."
+          example: "#FFFFFF"
+
+    # TEXT ANALYSIS SCHEMAS
+    TextAnalysisRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          description: The text to be analyzed.
+          example: "Hello world. This is a test."
+    TextAnalysisResponse:
+      type: object
+      properties:
+        wordCount:
+          type: integer
+        characterCount:
+          type: integer
+        sentenceCount:
+          type: integer
+        paragraphCount:
+          type: integer
+        readingTimeMinutes:
+          type: number
+          format: float
+
+    # SECURITY TOOLS SCHEMAS
+    GeneratePasswordRequest:
+      type: object
+      properties:
+        length:
+          type: integer
+          default: 16
+          minimum: 8
+          maximum: 128
+        includeNumbers:
+          type: boolean
+          default: true
+        includeSymbols:
+          type: boolean
+          default: true
+        includeUppercase:
+          type: boolean
+          default: true
+    GeneratedPasswordResponse:
+      type: object
+      properties:
+        password:
+          type: string
+          example: "sTr0ngP@ssw0rd!_123"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Enter your JWT in the format: Bearer {token}"
+
+security:
+  - bearerAuth: []
+
+paths:
+  # AUTHENTICATION
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/RegisterRequest" } }
+      responses:
+        "201":
+          description: User registered successfully.
+          content:
+            application/json:
+              { schema: { $ref: "#/components/schemas/AuthResponse" } }
+        "400":
+          {
+            description: Invalid input data.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+        "409":
+          {
+            description: Account already exists.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+
+  /auth/login:
+    post:
+      summary: Log in a user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/LoginRequest" } }
+      responses:
+        "200":
+          description: User logged in successfully.
+          content:
+            application/json:
+              { schema: { $ref: "#/components/schemas/AuthResponse" } }
+        "401":
+          {
+            description: Invalid credentials.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+
+  /auth/logout:
+    post:
+      summary: Log out the current user
+      tags: [Auth]
+      responses:
+        "200":
+          {
+            description: Successfully logged out.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/SuccessResponse" } },
+              },
+          }
+        "401":
+          {
+            description: Unauthorized.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+
+  /auth/validate-token:
+    get:
+      summary: Validate the current user's token
+      tags: [Auth]
+      responses:
+        "200":
+          {
+            description: Token is valid.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/AuthResponse" } },
+              },
+          }
+        "401":
+          {
+            description: Invalid or expired token.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+
+  # USER MANAGEMENT
+  /user/me:
+    get:
+      summary: Get current user profile
+      tags: [User Management]
+      responses:
+        "200":
+          {
+            description: User profile retrieved.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/User" } },
+              },
+          }
+        "401":
+          {
+            description: Unauthorized.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+  /user/me/password:
+    put:
+      summary: Change current user's password
+      tags: [User Management]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/ChangePasswordRequest" } }
+      responses:
+        "200":
+          {
+            description: Password changed successfully.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/SuccessResponse" } },
+              },
+          }
+        "400":
+          {
+            description: Invalid input.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+        "401":
+          {
+            description: Unauthorized.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+
+  # URL SHORTENER
+  /urls:
+    post:
+      summary: Create a new short URL
+      tags: https://www.shorturl.at/
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/CreateUrlRequest" } }
+      responses:
+        "201":
+          {
+            description: Short URL created.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/Url" } },
+              },
+          }
+        "400":
+          {
+            description: Invalid request body.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/ErrorResponse" } },
+              },
+          }
+        "401": { description: Unauthorized. }
+    get:
+      summary: Get all URLs for the current user
+      tags: https://www.shorturl.at/
+      responses:
+        "200":
+          {
+            description: A list of the user's URLs.,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        type: array,
+                        items: { $ref: "#/components/schemas/Url" },
+                      },
+                  },
+              },
+          }
+        "401": { description: Unauthorized. }
+
+  /urls/{id}:
+    parameters:
+      [
+        {
+          name: id,
+          in: path,
+          required: true,
+          description: The ID of the URL entry.,
+          schema: { type: string },
+        },
+      ]
+    get:
+      summary: Get details of a specific URL
+      tags: https://www.shorturl.at/
+      responses:
+        "200":
+          {
+            description: URL details retrieved.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/Url" } },
+              },
+          }
+        "401": { description: Unauthorized. }
+        "404": { description: URL not found. }
+    patch:
+      summary: Update a short URL
+      tags: https://www.shorturl.at/
+      requestBody:
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/UpdateUrlRequest" } }
+      responses:
+        "200":
+          {
+            description: URL updated.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/Url" } },
+              },
+          }
+        "400": { description: Invalid request body. }
+        "404": { description: URL not found. }
+    delete:
+      summary: Delete a short URL
+      tags: https://www.shorturl.at/
+      responses:
+        "204": { description: URL deleted successfully. }
+        "401": { description: Unauthorized. }
+        "404": { description: URL not found. }
+  /urls/{id}/analytics:
+    parameters:
+      [
+        {
+          name: id,
+          in: path,
+          required: true,
+          description: The ID of the URL entry.,
+          schema: { type: string },
+        },
+      ]
+    get:
+      summary: Get analytics for a short URL
+      tags: https://www.shorturl.at/
+      responses:
+        "200":
+          {
+            description: Analytics data retrieved.,
+            content:
+              {
+                application/json:
+                  { schema: { $ref: "#/components/schemas/UrlAnalytics" } },
+              },
+          }
+        "401": { description: Unauthorized. }
+        "404": { description: URL not found. }
+
+  # FILE OPERATIONS
+  /files/compress:
+    post:
+      summary: Upload a file to compress
+      tags: [File Operations]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              {
+                type: object,
+                properties:
+                  {
+                    file:
+                      {
+                        type: string,
+                        format: binary,
+                        description: The file to be compressed.,
+                      },
+                  },
+              }
+      responses:
+        "200":
+          {
+            description: File compressed successfully.,
+            content:
+              { application/zip: { schema: { type: string, format: binary } } },
+          }
+        "400": { description: No file uploaded or invalid file type. }
+  /files/decompress:
+    post:
+      summary: Upload a file to decompress
+      tags: [File Operations]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              {
+                type: object,
+                properties:
+                  {
+                    file:
+                      {
+                        type: string,
+                        format: binary,
+                        description: The compressed file (.zip) to decompress.,
+                      },
+                  },
+              }
+      responses:
+        "200":
+          {
+            description: File decompressed successfully.,
+            content:
+              {
+                application/octet-stream:
+                  { schema: { type: string, format: binary } },
+              },
+          }
+        "400": { description: No file uploaded or not a valid archive. }
+
+  # IMAGE CONVERSION
+  /image/convert:
+    post:
+      summary: Convert an image to a different format
+      tags: [Image Conversion]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              {
+                type: object,
+                properties:
+                  {
+                    file:
+                      {
+                        type: string,
+                        format: binary,
+                        description: The image file to convert.,
+                      },
+                    targetFormat:
+                      {
+                        type: string,
+                        enum: [jpeg, png, webp, gif],
+                        description: The desired output format.,
+                      },
+                  },
+              }
+      responses:
+        "200":
+          {
+            description: Image converted successfully.,
+            content:
+              { "image/*": { schema: { type: string, format: binary } } },
+          }
+        "400": { description: Invalid request or unsupported format. }
+
+  # QR CODE GENERATION
+  /qr/generate:
+    post:
+      summary: Generate a QR Code
+      tags: [QR Code Generation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/GenerateQrRequest" } }
+      responses:
+        "200":
+          {
+            description: QR Code image generated successfully.,
+            content:
+              { "image/png": { schema: { type: string, format: binary } } },
+          }
+        "400": { description: Invalid input data. }
+
+  # TEXT ANALYSIS
+  /text/analyze:
+    post:
+      summary: Analyze a block of text
+      tags: [Text Analysis]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/TextAnalysisRequest" } }
+      responses:
+        "200":
+          {
+            description: Text analysis complete.,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      { $ref: "#/components/schemas/TextAnalysisResponse" },
+                  },
+              },
+          }
+        "400": { description: Invalid input. }
+
+  # SECURITY TOOLS
+  /security/generate-password:
+    post:
+      summary: Generate a secure random password
+      tags: [Security Tools]
+      requestBody:
+        content:
+          application/json:
+            { schema: { $ref: "#/components/schemas/GeneratePasswordRequest" } }
+      responses:
+        "200":
+          {
+            description: Password generated successfully.,
+            content:
+              {
+                application/json:
+                  {
+                    schema:
+                      {
+                        $ref: "#/components/schemas/GeneratedPasswordResponse",
+                      },
+                  },
+              },
+          }
