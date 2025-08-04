@@ -2,7 +2,12 @@
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { SUBSCRIPTION_TIERS } from '../constants/index.js';
+import {
+    SUBSCRIPTION_TIERS,
+    USER_TYPES
+} from '../constants/index.js';
+
+const { FREE, PRO, ELITE, BUSINESS, ENTERPRISE, CUSTOM } = SUBSCRIPTION_TIERS;
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -18,13 +23,54 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required.'],
         minlength: [8, 'Password must be at least 8 characters long.']
     },
+    userType: {
+        type: String,
+        enum: Object.values(USER_TYPES),
+        default: USER_TYPES.INDIVIDUAL,
+    },
+    userPlan: {
+        type: String,
+        enum: [
+            FREE,
+            PRO,
+            ELITE,
+            BUSINESS,
+            ENTERPRISE,
+            CUSTOM,
+        ],
+        default: FREE,
+    },
+    storagePlan: {
+        type: String,
+        enum: [
+            PRO,
+            ELITE,
+            BUSINESS,
+            ENTERPRISE,
+            CUSTOM,
+        ],
+        default: null,
+    },
     vaultSalt: {
         type: String,
     },
-    subscriptionTier: {
-        type: String,
-        enum: Object.values(SUBSCRIPTION_TIERS),
-        default: SUBSCRIPTION_TIERS.FREE
+    apiKeys: {
+        openai: {
+            type: String,
+            select: false
+        },
+        gemini: {
+            type: String,
+            select: false
+        },
+        claude: {
+            type: String,
+            select: false
+        },
+        perplexity: {
+            type: String,
+            select: false
+        },
     },
     createdAt: {
         type: Date,

@@ -6,111 +6,102 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '../constants';
 
 const pricingPlans = {
-    monthly: [
-        {
-            name: 'Starter',
-            price: '0',
-            description: 'The perfect way to get started with our essential tools.',
-            isPopular: false,
-            features: [
-                'Limited API access',
-                'Basic file compression',
-                'Up to 10 URL shorteners',
-                'Single password vault',
-                'Email forwarding',
-            ],
-            unavailableFeatures: [
-                'Advanced analytics',
-                'Priority support',
-                'High-volume API',
-            ]
-        },
-        {
-            name: 'Pro',
-            price: '19',
-            description: 'Unlock advanced features and higher usage limits.',
-            isPopular: true,
-            features: [
-                'Unlimited API access',
-                'Advanced file compression',
-                'Unlimited URL shorteners',
-                'Multiple password vaults',
-                'Email forwarding & aliases',
-                'Advanced analytics',
-                'Priority support',
-            ],
-            unavailableFeatures: [
-                'Dedicated account manager',
-            ]
-        },
-        {
-            name: 'Business',
-            price: '49',
-            description: 'All-inclusive plan for teams and high-demand users.',
-            isPopular: false,
-            features: [
-                'Everything in Pro',
-                'High-volume API',
-                'Dedicated account manager',
-                'Team collaboration tools',
-                'White-label options',
-                'Custom integrations',
-            ]
-        },
-    ],
-    yearly: [
-        {
-            name: 'Starter',
-            price: '0',
-            description: 'The perfect way to get started with our essential tools.',
-            isPopular: false,
-            features: [
-                'Limited API access',
-                'Basic file compression',
-                'Up to 10 URL shorteners',
-                'Single password vault',
-                'Email forwarding',
-            ],
-            unavailableFeatures: [
-                'Advanced analytics',
-                'Priority support',
-                'High-volume API',
-            ]
-        },
-        {
-            name: 'Pro',
-            price: '199',
-            description: 'Unlock advanced features and higher usage limits.',
-            isPopular: true,
-            features: [
-                'Unlimited API access',
-                'Advanced file compression',
-                'Unlimited URL shorteners',
-                'Multiple password vaults',
-                'Email forwarding & aliases',
-                'Advanced analytics',
-                'Priority support',
-            ],
-            unavailableFeatures: [
-                'Dedicated account manager',
-            ]
-        },
-        {
-            name: 'Business',
-            price: '499',
-            description: 'All-inclusive plan for teams and high-demand users.',
-            isPopular: false,
-            features: [
-                'Everything in Pro',
-                'High-volume API',
-                'Dedicated account manager',
-                'Team collaboration tools',
-                'White-label options',
-                'Custom integrations',
-            ]
-        },
-    ]
+    monthly: [{
+        name: 'Free',
+        price: '0',
+        description: 'Essential tools to get you started.',
+        isPopular: false,
+        features: [
+            '2 Tool Uses per Day',
+            '2 AI LLM Calls per Day',
+            '1 Day Data Retention',
+            'No Permanent Storage',
+        ],
+        unavailableFeatures: [
+            'Increased Limits',
+            'Long-term Storage',
+            'Bring Your Own LLM API Keys',
+            'Priority Support',
+        ]
+    }, {
+        name: 'Pro',
+        price: '19',
+        description: 'For power users who need more.',
+        isPopular: true,
+        features: [
+            '20 Tool Uses per Day',
+            '15 AI LLM Calls per Day',
+            '5 Months Data Retention',
+            '15GB Permanent Storage',
+            'Priority Support',
+        ],
+        unavailableFeatures: [
+            'Bring Your Own LLM API Keys',
+            'Unlimited Tool Usage',
+        ]
+    }, {
+        name: 'Elite',
+        price: '49',
+        description: 'For professionals and teams who need it all.',
+        isPopular: false,
+        features: [
+            'Unlimited Tool Usage',
+            '75 AI LLM Calls per Day',
+            '2 Years Data Retention',
+            '70GB Permanent Storage',
+            'Bring Your Own LLM API Keys',
+            'Priority Support',
+        ]
+    },],
+    yearly: [{
+        name: 'Free',
+        price: '0',
+        description: 'Essential tools to get you started.',
+        isPopular: false,
+        features: [
+            '2 Tool Uses per Day',
+            '2 AI LLM Calls per Day',
+            '1 Day Data Retention',
+            'No Permanent Storage',
+        ],
+        unavailableFeatures: [
+            'Increased Limits',
+            'Long-term Storage',
+            'Bring Your Own LLM API Keys',
+            'Priority Support',
+        ]
+    }, {
+        name: 'Pro',
+        price: '199',
+        description: 'For power users who need more.',
+        isPopular: true,
+        features: [
+            '20 Tool Uses per Day',
+            '15 AI LLM Calls per Day',
+            '5 Months Data Retention',
+            '15GB Permanent Storage',
+            'Priority Support',
+        ],
+        unavailableFeatures: [
+            'Bring Your Own LLM API Keys',
+            'Unlimited Tool Usage',
+        ]
+    }, {
+        name: 'Elite',
+        price: '499',
+        description: 'For professionals and teams who need it all.',
+        isPopular: false,
+        features: [
+            'Unlimited Tool Usage',
+            '75 AI LLM Calls per Day',
+            '2 Years Data Retention',
+            '70GB Permanent Storage',
+            'Bring Your Own LLM API Keys',
+            'Priority Support',
+        ]
+    },]
 };
+
 
 const PricingPage = () => {
     const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'yearly'

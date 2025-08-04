@@ -1,5 +1,3 @@
-// backend-gateway/src/config/cors.js
-
 const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
     ? process.env.CORS_ALLOWED_ORIGINS.split(',')
     : [];

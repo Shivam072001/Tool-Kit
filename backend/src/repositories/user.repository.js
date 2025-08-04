@@ -30,6 +30,16 @@ class UserRepository {
     async findUserById(id) {
         return await User.findById(id);
     }
+
+    async findUserByIdWithApiKeys(id) {
+        return await User.findById(id).select('+apiKeys.openai +apiKeys.gemini +apiKeys.claude +apiKeys.perplexity');
+    }
+
+    async updateUser(id, updateData) {
+        return await User.findByIdAndUpdate(id, updateData, {
+            new: true
+        });
+    }
 }
 
 export const userRepository = new UserRepository();

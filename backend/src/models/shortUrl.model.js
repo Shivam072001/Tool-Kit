@@ -1,5 +1,3 @@
-// backend-gateway/src/models/shortUrl.model.js
-
 import mongoose from 'mongoose';
 
 const shortUrlSchema = new mongoose.Schema({
@@ -16,7 +14,7 @@ const shortUrlSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: false // Allow anonymous URL shortening
+        required: false
     },
     clicks: {
         type: Number,
@@ -45,7 +43,7 @@ const shortUrlSchema = new mongoose.Schema({
     },
 });
 
-shortUrlSchema.index({ user: 1 }); // Index for fetching a user's URLs
+shortUrlSchema.index({ user: 1 });
 
 const ShortUrl = mongoose.model('ShortUrl', shortUrlSchema);
 

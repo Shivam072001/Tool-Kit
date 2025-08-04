@@ -8,11 +8,12 @@ import {
     getJobStatus,
     uploadAndTranscribeAudio,
 } from "../controllers/audioOperation.controller.js";
+import { checkUsage } from "../middlewares/subscription.middleware.js";
 
 const router = express.Router();
 router.use(protect);
 
-router.post("/transcribe", upload.single("file"), uploadAndTranscribeAudio);
+router.post("/transcribe", upload.single("file"), checkUsage('llm'), uploadAndTranscribeAudio);
 router.get('/history', getHistory);
 router.get("/status/:taskId", getJobStatus);
 router.delete('/:id', deleteAudioOperation);

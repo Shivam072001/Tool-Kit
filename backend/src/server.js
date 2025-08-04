@@ -8,17 +8,22 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-
+import swaggerUi from 'swagger-ui-express';
+import redoc from 'redoc-express';
 import connectDB from './config/db.js';
 import { corsOptions } from './config/cors.js';
 import mainRouter from './routes/index.js';
 import { globalErrorHandler } from './controllers/error.controller.js';
 import { config } from './config/env.js';
+import { logger } from './utils/Logger.js';
+import { LEVELS } from './constants/index.js';
+import { swaggerSpec } from './config/swagger.js';
 
 // Load environment variables
 dotenv.config();
 
 const { nodeEnv, port } = config;
+const { SUCCESS, WARN, ERROR } = LEVELS
 
 // --- Initialize Express App ---
 const app = express();
@@ -31,15 +36,15 @@ const io = new Server(httpServer, {
 
 // --- Socket.io Connection Logic ---
 io.on('connection', (socket) => {
-    console.log('🔌 A user connected:', socket.id);
+    logger.info('🔌 A user connected:', { "Socket Id": socket.id });
 
     socket.on('join_room', (userId) => {
         socket.join(userId);
-        console.log(`User ${socket.id} joined room ${userId}`);
+        logger.info(`User ${socket.id} joined room ${userId}`);
     });
 
     socket.on('disconnect', () => {
-        console.log('🔥 A user disconnected:', socket.id);
+        logger.info('A user disconnected:', { "Socket Id": socket.id });
     });
 });
 
@@ -67,15 +72,32 @@ const limiter = rateLimit({
     legacyHeaders: false,
     message: 'Too many requests from this IP, please try again after 15 minutes.'
 });
-app.use('/api', limiter); // Apply to all API routes
+app.use('/api/v1', limiter);
 
 // 5. Body Parsers
 app.use(express.json({ limit: '10kb' })); // Control request body size
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get(
+    '/redoc',
+    redoc({
+        title: 'API Docs',
+        specUrl: '/docs-json',
+    })
+);
+app.get('/docs-json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 // --- Mount Routers ---
-app.use('/', mainRouter);
+app.use('/api/v1', mainRouter);
+
+// Handle 404 Not Found
+app.all('{*path}', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
 
 
 // --- Global Error Handling ---
@@ -85,24 +107,22 @@ app.use(globalErrorHandler);
 
 // --- Start Server using httpServer ---
 httpServer.listen(port, () => {
-    console.log(`🚀 Server running in ${nodeEnv} mode on port ${port}`);
+    logger.message(`🚀 Server running in ${nodeEnv} mode on port ${port}`, SUCCESS);
 });
 
 // --- Graceful Shutdown ---
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-    console.error('UNHANDLED REJECTION! 💥 Shutting down...');
-    console.error(err.name, err.message);
-    server.close(() => {
+    logger.error('UNHANDLED REJECTION! 💥 Shutting down...', { Error: err });
+    httpServer.close(() => {
         process.exit(1);
     });
 });
 
 // Handle SIGTERM signal (from Docker, Kubernetes, etc.)
 process.on('SIGTERM', () => {
-    console.log('👋 SIGTERM RECEIVED. Shutting down gracefully.');
-    server.close(() => {
-        console.log('💥 Process terminated.');
+    logger.message('👋 SIGTERM RECEIVED. Shutting down gracefully.', WARN);
+    httpServer.close(() => {
+        logger.message('💥 Process terminated.', ERROR);
     });
 });
 

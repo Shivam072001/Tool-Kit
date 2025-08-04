@@ -3,7 +3,20 @@
 export const SUBSCRIPTION_TIERS = {
     FREE: 'free',
     PRO: 'pro',
+    ELITE: 'elite',
+    BUSINESS: 'business',
     ENTERPRISE: 'enterprise',
+    CUSTOM: 'custom',
+};
+
+export const USER_TYPES = {
+    INDIVIDUAL: 'individual',
+    BUSINESS: 'business',
+};
+
+export const PLAN_TYPES = {
+    USER: 'user',
+    STORAGE: 'storage',
 };
 
 export const RESPONSE_STATUS = {
@@ -44,22 +57,25 @@ export const CRYPTO_DEFAULTS = {
     TAG_LENGTH: 16,
     KEY_LENGTH: 32,
     ITERATIONS: 100000,
+    HASH: 'sha512'
 };
 
-export const LOG_LEVELS = {
+export const LEVELS = {
     INFO: 'info',
     DEBUG: 'debug',
     WARN: 'warn',
     ERROR: 'error',
     DETAILS: 'detailed',
-    RESET: 'reset'
+    RESET: 'reset',
+    SUCCESS: 'success'
 }
 
 export const LOG_LEVEL_COLORS = {
-    INFO: '\x1b[32m',    // green
-    DEBUG: '\x1b[34m',   // blue
-    WARN: '\x1b[33m',    // yellow
-    ERROR: '\x1b[31m',   // red
+    SUCCESS: '\x1b[32m',   // green
+    INFO: '\x1b[34m',      // blue
+    DEBUG: '\x1b[37m',     // off-white (bright white)
+    WARN: '\x1b[33m',      // yellow
+    ERROR: '\x1b[31m',     // red
     DETAILS: '\x1b[38;5;208m', // orange
     RESET: '\x1b[0m'
 }

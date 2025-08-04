@@ -1,8 +1,7 @@
-// src/controllers/file.controller.js
-
 import { AppError } from '../utils/AppError.js';
 import { fileOperationService } from '../services/fileOperation.service.js';
 import { conversionMap } from '../config/conversions.js';
+import { ApiResponse } from '../utils/ApiResponse.js';
 import { OPERATION_STATUSES } from '../constants/index.js';
 
 /**
@@ -10,12 +9,7 @@ import { OPERATION_STATUSES } from '../constants/index.js';
  * Sends the available conversion options to the client.
  */
 export const getConversionOptions = (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        data: {
-            conversionMap,
-        },
-    });
+    res.status(200).json(new ApiResponse(200, { conversionMap }));
 };
 
 export const uploadAndCompressFile = async (req, res, next) => {
@@ -25,10 +19,7 @@ export const uploadAndCompressFile = async (req, res, next) => {
 
     try {
         const { taskId } = await fileOperationService.processFileCompression(req.file, req.user);
-        res.status(202).json({
-            status: OPERATION_STATUSES.PROCESSING,
-            taskId: taskId,
-        });
+        res.status(202).json(new ApiResponse(202, { taskId }, OPERATION_STATUSES.PROCESSING));
     } catch (error) {
         next(new AppError(error.message, 502));
     }
@@ -46,10 +37,7 @@ export const uploadAndConvertFile = async (req, res, next) => {
 
     try {
         const { taskId } = await fileOperationService.processFileConversion(req.file, req.user, targetFormat);
-        res.status(202).json({
-            status: OPERATION_STATUSES.PROCESSING,
-            taskId: taskId,
-        });
+        res.status(202).json(new ApiResponse(202, { taskId }, OPERATION_STATUSES.PROCESSING));
     } catch (error) {
         next(new AppError(error.message, 502));
     }
@@ -62,10 +50,7 @@ export const uploadAndRemoveBackground = async (req, res, next) => {
 
     try {
         const { taskId } = await fileOperationService.processBackgroundRemoval(req.file, req.user);
-        res.status(202).json({
-            status: OPERATION_STATUSES.PROCESSING,
-            taskId: taskId,
-        });
+        res.status(202).json(new ApiResponse(202, { taskId }, OPERATION_STATUSES.PROCESSING));
     } catch (error) {
         next(new AppError(error.message, 502));
     }
@@ -75,7 +60,7 @@ export const getJobStatus = async (req, res, next) => {
     try {
         const { taskId } = req.params;
         const result = await fileOperationService.getJobStatus(taskId);
-        res.status(200).json(result);
+        res.status(200).json(new ApiResponse(200, result));
     } catch (error) {
         next(new AppError('Could not retrieve task status.', 502));
     }
@@ -84,7 +69,7 @@ export const getJobStatus = async (req, res, next) => {
 export const deleteFileOperation = async (req, res, next) => {
     try {
         await fileOperationService.deleteFileOperation(req.params.id, req.user.id);
-        res.status(204).json({ status: 'success', data: null });
+        res.status(204).json(new ApiResponse(204, null));
     } catch (error) {
         next(error);
     }
