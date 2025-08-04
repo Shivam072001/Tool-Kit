@@ -2,57 +2,62 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from celery.result import AsyncResult
+from django.core.files.storage import default_storage
 
-from .tasks import remove_background_task, summarize_document_task, check_grammar_task
+from ..tasks import remove_background_task, summarize_document_task, check_grammar_task, transcribe_audio_task
 from .serializers import ImageUploadSerializer, FileUploadSerializer, TextSerializer
 
 class BackgroundRemovalView(APIView):
-    """
-    API view to handle requests for removing background from an image.
-    """
     def post(self, request, *args, **kwargs):
         serializer = ImageUploadSerializer(data=request.data)
-        if serializer.is_valid():
-            image_file = serializer.validated_data['image']
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Save the file temporarily to pass its path to the task
-            # In a production system, this would be handled by a storage service like S3.
-            from django.core.files.storage import default_storage
-            file_name = default_storage.save(image_file.name, image_file)
+        image_file = serializer.validated_data['image']
+        api_key = request.data.get('api_key') # Get the API key
+        file_name = default_storage.save(image_file.name, image_file)
+        output_filename = f"bg_removed_{file_name}"
 
-            task = remove_background_task.delay(file_name)
-            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        task = remove_background_task.delay(file_name, output_filename, api_key) # Pass key to task
+        return Response({"task_id": task.id}, status=status.HTTP_202_ACCEPTED)
 
 class DocumentSummarizerView(APIView):
-    """
-    API view to handle requests for summarizing a document.
-    """
     def post(self, request, *args, **kwargs):
-        # CORRECTED: Uses the generic FileUploadSerializer instead of ImageUploadSerializer
         serializer = FileUploadSerializer(data=request.data)
-        if serializer.is_valid():
-            doc_file = serializer.validated_data['file']
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            from django.core.files.storage import default_storage
-            file_name = default_storage.save(doc_file.name, doc_file)
+        doc_file = serializer.validated_data['file']
+        api_key = request.data.get('api_key') # Get the API key
+        file_name = default_storage.save(doc_file.name, doc_file)
 
-            task = summarize_document_task.delay(file_name)
-            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        task = summarize_document_task.delay(file_name, doc_file.name, api_key) # Pass key to task
+        return Response({"task_id": task.id}, status=status.HTTP_202_ACCEPTED)
 
 class GrammarCheckerView(APIView):
-    """
-    API view to handle requests for checking grammar in a block of text.
-    """
     def post(self, request, *args, **kwargs):
-        # IMPLEMENTED: Uses the new TextSerializer
         serializer = TextSerializer(data=request.data)
-        if serializer.is_valid():
-            text = serializer.validated_data['text']
-            task = check_grammar_task.delay(text)
-            return Response({"taskId": task.id}, status=status.HTTP_202_ACCEPTED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        text = serializer.validated_data['text']
+        api_key = request.data.get('api_key') # Get the API key
+
+        task = check_grammar_task.delay(text, api_key) # Pass key to task
+        return Response({"task_id": task.id}, status=status.HTTP_202_ACCEPTED)
+
+class AudioTranscriptionView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = FileUploadSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        audio_file = serializer.validated_data['file']
+        api_key = request.data.get('api_key') # Get the API key
+        file_name = default_storage.save(audio_file.name, audio_file)
+
+        task = transcribe_audio_task.delay(file_name, api_key) # Pass key to task
+        return Response({"task_id": task.id}, status=status.HTTP_202_ACCEPTED)
 
 class TaskStatusView(APIView):
     """
