@@ -1,8 +1,8 @@
 /**
  * @swagger
  * tags:
- *   - name: Audio Operations
- *     description: Perform operations on audio files, such as transcription. These are asynchronous operations.
+ *   name: Audio Operations
+ *   description: Perform operations on audio files, such as transcription. These are asynchronous operations.
  */
 
 /**
@@ -21,7 +21,6 @@
  *         size:
  *           type: number
  *           example: 1234567
- *
  *     AudioOperation:
  *       type: object
  *       properties:
@@ -74,7 +73,6 @@
  *         deleted:
  *           type: boolean
  *           example: false
- *
  *     AsyncJobStartResponse:
  *       type: object
  *       properties:
@@ -85,7 +83,6 @@
  *         message:
  *           type: string
  *           example: "Transcription job started successfully."
- *
  *     JobStatusResponse:
  *       type: object
  *       properties:
@@ -178,8 +175,8 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: The taskId received when the job was started.
- *         example: "bull:audio-handler:789"
+ *           description: The taskId received when the job was started.
+ *           example: "bull:audio-handler:789"
  *     responses:
  *       '200':
  *         description: The current status of the job. The result object will contain the transcribed text.
@@ -205,8 +202,8 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the audio operation record to delete.
- *         example: "60d0fe4f5311236168a109e2"
+ *           description: The ID of the audio operation record to delete.
+ *           example: "60d0fe4f5311236168a109e2"
  *     responses:
  *       '204':
  *         description: History record deleted successfully.
