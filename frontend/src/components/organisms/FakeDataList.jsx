@@ -16,7 +16,7 @@ const FakeDataList = ({ history, onDeleteClick, onHistoryClick }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">Recent Generations</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">Recent Generations</h2>
             <div className="space-y-4">
                 {history.map((item) => (
                     <ResourceListItem
@@ -35,7 +35,7 @@ const FakeDataList = ({ history, onDeleteClick, onHistoryClick }) => {
                             onClick={() => onHistoryClick(item)}
                             className="w-full text-left"
                         >
-                            <p className="font-semibold text-foreground capitalize">
+                            <p className="font-semibold text-primary-text capitalize">
                                 {item.count} rows of {item.dataType} data
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">

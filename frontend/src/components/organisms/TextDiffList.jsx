@@ -18,7 +18,7 @@ const TextDiffList = ({ history, onLoad, onDeleteClick }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">Recent Diffs</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">Recent Diffs</h2>
             <div className="space-y-4">
                 {history.map((item) => (
                     <ResourceListItem
@@ -34,7 +34,7 @@ const TextDiffList = ({ history, onLoad, onDeleteClick }) => {
                         }
                     >
                         <button onClick={() => onLoad(item.originalText, item.changedText)} className="text-left w-full">
-                            <p className="text-foreground font-mono text-sm">
+                            <p className="text-primary-text font-mono text-sm">
                                 <strong>Original:</strong> {truncate(item.originalText, 50)}
                             </p>
                             <p className="text-muted-foreground font-mono text-sm">

@@ -16,7 +16,7 @@ const RegexList = ({ history, onLoad, onDeleteClick }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">Saved Patterns</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">Saved Patterns</h2>
             <div className="space-y-4">
                 {history.map((item) => (
                     <ResourceListItem
@@ -35,7 +35,7 @@ const RegexList = ({ history, onLoad, onDeleteClick }) => {
                             onClick={() => onLoad(item)}
                             className="text-left w-full"
                         >
-                            <p className="font-semibold text-foreground">{item.name}</p>
+                            <p className="font-semibold text-primary-text">{item.name}</p>
                             <p className="font-mono text-sm text-primary mt-1">
                                 /{item.pattern}/{item.flags}
                             </p>

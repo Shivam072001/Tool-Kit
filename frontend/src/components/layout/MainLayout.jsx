@@ -10,7 +10,7 @@ const MainLayout = () => {
             <Navbar />
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar />
-                <main className="flex-1 p-8 overflow-y-auto bg-background">
+                <main className="flex-1 p-8 overflow-y-auto bg-primary-bg">
                     <Outlet />
                 </main>
             </div>

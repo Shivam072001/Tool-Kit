@@ -42,12 +42,12 @@ const DocumentSummarizerPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Document Summarizer</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Document Summarizer</h1>
             <p className="text-muted-foreground mb-8">Get the key points from any document instantly.</p>
 
             <Card className="p-8">
                 <div className="border-b border-border pb-6 mb-6">
-                    <h2 className="text-2xl font-semibold text-foreground">Upload Document</h2>
+                    <h2 className="text-2xl font-semibold text-primary-text">Upload Document</h2>
                     <p className="text-muted-foreground mt-1">Supports .txt, .pdf, and .docx files.</p>
                 </div>
 
@@ -56,7 +56,7 @@ const DocumentSummarizerPage = () => {
                         <Dropzone onDrop={handleDrop} accept={{ 'text/plain': ['.txt'], 'application/pdf': ['.pdf'], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'] }} />
                         {file && (
                             <div className="mt-6 text-center">
-                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <p className="text-primary-text">Selected: <span className="font-medium">{file.name}</span></p>
                                 <Button onClick={handleSummarize} className="mt-4">
                                     Summarize Document
                                 </Button>
@@ -75,13 +75,13 @@ const DocumentSummarizerPage = () => {
                 {status === OPERATION_STATUSES.SUCCESS && (
                     <div>
                         <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-foreground">Generated Summary</h3>
+                            <h3 className="text-xl font-bold text-primary-text">Generated Summary</h3>
                             <Button variant="ghost" onClick={copyToClipboard} className="flex items-center gap-2">
                                 <ClipboardDocumentIcon className="h-5 w-5" /> Copy
                             </Button>
                         </div>
                         <div className="mt-4 p-4 bg-input border border-border rounded-lg max-h-96 overflow-y-auto">
-                            <p className="text-foreground whitespace-pre-wrap">{summaryText}</p>
+                            <p className="text-primary-text whitespace-pre-wrap">{summaryText}</p>
                         </div>
                     </div>
                 )}

@@ -80,7 +80,7 @@ const FileCompressorPage = () => {
             case "uploading":
                 return (
                     <div className="mt-6">
-                        <p className="text-center text-foreground mb-2">
+                        <p className="text-center text-primary-text mb-2">
                             Uploading: {progress}%
                         </p>
                         <div className="w-full bg-border rounded-full h-2.5">
@@ -130,7 +130,7 @@ const FileCompressorPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">
                 File Compressor
             </h1>
             <p className="text-muted-foreground mb-8">
@@ -143,7 +143,7 @@ const FileCompressorPage = () => {
                         <Dropzone onDrop={handleDrop} accept={acceptedFiles} />
                         {file && (
                             <div className="mt-6 text-center">
-                                <p className="text-foreground">
+                                <p className="text-primary-text">
                                     Selected: <span className="font-medium">{file.name}</span>
                                 </p>
                                 <Button onClick={handleUpload} className="mt-4">

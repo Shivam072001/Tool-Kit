@@ -115,7 +115,7 @@ const ConverterPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Currency Converter</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Currency Converter</h1>
             <p className="text-muted-foreground mb-8">Get real-time exchange rates and track your history.</p>
 
             <Card className="p-8">

@@ -163,21 +163,21 @@ const QRCodeGeneratorPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">QR Code Generator & Reader</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">QR Code Generator & Reader</h1>
             <p className="text-muted-foreground mb-8">Create, save, and scan QR codes with ease.</p>
 
             <Card className="p-0 overflow-hidden">
                 <div className="flex border-b border-border">
                     <button
                         onClick={() => setActiveTab('generate')}
-                        className={`flex-1 p-4 font-semibold text-center transition-colors ${activeTab === 'generate' ? 'bg-primary text-primary-foreground' : 'hover:bg-input text-foreground'}`}
+                        className={`flex-1 p-4 font-semibold text-center transition-colors ${activeTab === 'generate' ? 'bg-primary text-primary-foreground' : 'hover:bg-input text-primary-text'}`}
                     >
                         <QrCodeIcon className="h-5 w-5 inline-block mr-2" />
                         Generate
                     </button>
                     <button
                         onClick={() => setActiveTab('read')}
-                        className={`flex-1 p-4 font-semibold text-center transition-colors ${activeTab === 'read' ? 'bg-primary text-primary-foreground' : 'hover:bg-input text-foreground'}`}
+                        className={`flex-1 p-4 font-semibold text-center transition-colors ${activeTab === 'read' ? 'bg-primary text-primary-foreground' : 'hover:bg-input text-primary-text'}`}
                     >
                         <DocumentMagnifyingGlassIcon className="h-5 w-5 inline-block mr-2" />
                         Read
@@ -241,7 +241,7 @@ const QRCodeGeneratorPage = () => {
                             {readerResult && (
                                 <div className="mt-6 bg-green-500/10 p-4 rounded-md">
                                     <h3 className="font-bold text-green-700 dark:text-green-300">Decoded Result:</h3>
-                                    <p className="text-foreground font-mono break-all mt-2">{readerResult}</p>
+                                    <p className="text-primary-text font-mono break-all mt-2">{readerResult}</p>
                                 </div>
                             )}
                             {readerError && (

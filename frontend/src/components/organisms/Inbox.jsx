@@ -15,7 +15,7 @@ const Inbox = ({ emails }) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             <div className="md:col-span-1 border-r border-border pr-4">
-                <h3 className="text-lg font-bold text-foreground mb-4">Inbox</h3>
+                <h3 className="text-lg font-bold text-primary-text mb-4">Inbox</h3>
                 <ul className="space-y-2">
                     {emails.map((email) => (
                         <li key={email._id}>
@@ -26,7 +26,7 @@ const Inbox = ({ emails }) => {
                                     : 'hover:bg-input'
                                     }`}
                             >
-                                <p className="font-semibold text-foreground truncate">{email.from}</p>
+                                <p className="font-semibold text-primary-text truncate">{email.from}</p>
                                 <p className="text-sm text-muted-foreground truncate">{email.subject}</p>
                             </button>
                         </li>
@@ -36,13 +36,13 @@ const Inbox = ({ emails }) => {
             <div className="md:col-span-2">
                 {selectedEmail ? (
                     <div>
-                        <h3 className="text-xl font-bold text-foreground">{selectedEmail.subject}</h3>
+                        <h3 className="text-xl font-bold text-primary-text">{selectedEmail.subject}</h3>
                         <p className="text-sm text-muted-foreground mt-1">From: {selectedEmail.from}</p>
                         <p className="text-xs text-muted-foreground mt-1">
                             Received: {new Date(selectedEmail.receivedAt).toLocaleString()}
                         </p>
                         <div className="mt-6 border-t border-border pt-4">
-                            <p className="text-foreground whitespace-pre-wrap">{selectedEmail.body}</p>
+                            <p className="text-primary-text whitespace-pre-wrap">{selectedEmail.body}</p>
                         </div>
                     </div>
                 ) : (

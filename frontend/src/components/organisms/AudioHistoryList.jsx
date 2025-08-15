@@ -15,7 +15,7 @@ const AudioHistoryList = ({ history, onDeleteClick }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">Recent Transcriptions</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">Recent Transcriptions</h2>
             <div className="space-y-4">
                 {history.map((item) => (
                     <ResourceListItem
@@ -30,7 +30,7 @@ const AudioHistoryList = ({ history, onDeleteClick }) => {
                             </button>
                         }
                     >
-                        <p className="text-foreground font-medium truncate">
+                        <p className="text-primary-text font-medium truncate">
                             {item.source.filename}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">

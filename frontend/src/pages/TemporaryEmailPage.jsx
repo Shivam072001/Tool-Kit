@@ -110,7 +110,7 @@ const TemporaryEmailPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Temporary Email Generator</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Temporary Email Generator</h1>
             <p className="text-muted-foreground mb-8">
                 Instantly create a disposable email address. Emails expire after one hour.
             </p>
@@ -147,7 +147,7 @@ const TemporaryEmailPage = () => {
 
             {emailData && (
                 <Card className="mt-8 p-8 animate-fadeIn delay-100">
-                    <h3 className="text-xl font-bold text-foreground">Email Forwarding</h3>
+                    <h3 className="text-xl font-bold text-primary-text">Email Forwarding</h3>
                     <p className="text-muted-foreground mt-1 mb-4">
                         Automatically forward incoming emails to another address.
                     </p>

@@ -118,7 +118,7 @@ const Sidebar = () => (
                         <NavLink
                             to={link.path}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-4 py-2 rounded-md text-foreground transition-colors ${isActive
+                                `flex items-center gap-3 px-4 py-2 rounded-md text-primary-text transition-colors ${isActive
                                     ? "bg-primary text-primary-foreground"
                                     : "hover:bg-border"
                                 }`
@@ -142,7 +142,7 @@ const Sidebar = () => (
                         <NavLink
                             to={link.path}
                             className={({ isActive }) =>
-                                `flex items-center gap-3 px-4 py-2 rounded-md text-foreground transition-colors ${isActive
+                                `flex items-center gap-3 px-4 py-2 rounded-md text-primary-text transition-colors ${isActive
                                     ? "bg-primary text-primary-foreground"
                                     : "hover:bg-border"
                                 }`

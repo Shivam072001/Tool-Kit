@@ -16,11 +16,11 @@ const Navbar = () => {
         return (
             <nav className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
                 <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-                    <Link to="/" className="text-xl font-bold text-foreground">
+                    <Link to="/" className="text-xl font-bold text-primary-text">
                         UtilityBox
                     </Link>
                     <div className="flex items-center gap-4">
-                        <Link to="/pricing" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+                        <Link to="/pricing" className="text-sm font-medium text-primary-text hover:text-primary transition-colors">
                             Pricing
                         </Link>
                         {isAuthenticated ? (
@@ -47,11 +47,11 @@ const Navbar = () => {
     return (
         <nav className="bg-card/80 backdrop-blur-sm border-b border-border sticky top-0 z-50">
             <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-                <Link to={ROUTES.DASHBOARD} className="text-xl font-bold text-foreground">
+                <Link to={ROUTES.DASHBOARD} className="text-xl font-bold text-primary-text">
                     UtilityBox
                 </Link>
                 <div className="flex items-center gap-4">
-                    <span className="text-foreground hidden sm:block">Welcome, {user?.email}</span>
+                    <span className="text-primary-text hidden sm:block">Welcome, {user?.email}</span>
                     <ThemeSwitcher />
                     <Button onClick={logout} variant="destructive">
                         Logout

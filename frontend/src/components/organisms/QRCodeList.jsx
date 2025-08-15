@@ -18,7 +18,7 @@ const QRCodeList = ({ qrCodes, onDeleteClick, onDisable, onEnable }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">Your Saved QR Codes</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">Your Saved QR Codes</h2>
             <div className="space-y-4">
                 {qrCodes.map((code) => {
                     // The value for the QR code is now the tracking URL
@@ -30,7 +30,7 @@ const QRCodeList = ({ qrCodes, onDeleteClick, onDisable, onEnable }) => {
                             key={code._id}
                             actions={
                                 <>
-                                    <span className={`font-mono text - sm px - 2 py - 1 rounded - md ${isDisabled ? 'bg-border text-muted-foreground' : 'bg-border text-foreground'} `}>
+                                    <span className={`font-mono text - sm px - 2 py - 1 rounded - md ${isDisabled ? 'bg-border text-muted-foreground' : 'bg-border text-primary-text'} `}>
                                         Scans: {code.scans} / {code.maxScans || '∞'}
                                     </span>
                                     {isDisabled ? (
@@ -59,7 +59,7 @@ const QRCodeList = ({ qrCodes, onDeleteClick, onDisable, onEnable }) => {
                                         includeMargin={false}
                                     />
                                 </div>
-                                <p className="text-sm text-foreground break-all">{code.value}</p>
+                                <p className="text-sm text-primary-text break-all">{code.value}</p>
                             </div>
                         </ResourceListItem>
                     );

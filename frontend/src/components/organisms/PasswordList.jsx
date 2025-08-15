@@ -79,7 +79,7 @@ const PasswordList = ({ vault, setVault, masterPassword, salt }) => {
         <>
             <Card className="p-6">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-bold text-foreground">Your Vault</h3>
+                    <h3 className="text-xl font-bold text-primary-text">Your Vault</h3>
                     {!isAdding && (
                         <Button onClick={() => setIsAdding(true)} variant="ghost" className="flex items-center gap-2">
                             <PlusIcon className="h-5 w-5" /> Add New
@@ -123,16 +123,16 @@ const PasswordList = ({ vault, setVault, masterPassword, salt }) => {
                             key={item.id}
                             actions={
                                 <>
-                                    <button onClick={() => togglePasswordVisibility(item.id)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title={visiblePasswords[item.id] ? 'Hide password' : 'Show password'}>
+                                    <button onClick={() => togglePasswordVisibility(item.id)} className="p-2 text-muted-foreground hover:text-primary-text rounded-full" title={visiblePasswords[item.id] ? 'Hide password' : 'Show password'}>
                                         {visiblePasswords[item.id] ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                                     </button>
-                                    <button onClick={() => copyToClipboard(item.password)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title="Copy password">
+                                    <button onClick={() => copyToClipboard(item.password)} className="p-2 text-muted-foreground hover:text-primary-text rounded-full" title="Copy password">
                                         <ClipboardDocumentIcon className="h-5 w-5" />
                                     </button>
-                                    <button onClick={() => handleShare(item)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title="Share password securely">
+                                    <button onClick={() => handleShare(item)} className="p-2 text-muted-foreground hover:text-primary-text rounded-full" title="Share password securely">
                                         <ShareIcon className="h-5 w-5" />
                                     </button>
-                                    <button onClick={() => handleCheckBreach(item.id, item.password)} className="p-2 text-muted-foreground hover:text-foreground rounded-full" title="Check for breaches">
+                                    <button onClick={() => handleCheckBreach(item.id, item.password)} className="p-2 text-muted-foreground hover:text-primary-text rounded-full" title="Check for breaches">
                                         {breachStatus[item.id] === 'checking' ? <Spinner className="h-5 w-5" /> : (
                                             breachStatus[item.id]?.pwned ? <ShieldExclamationIcon className="h-5 w-5 text-destructive" /> : <ShieldCheckIcon className="h-5 w-5 text-green-500" />
                                         )}
@@ -143,7 +143,7 @@ const PasswordList = ({ vault, setVault, masterPassword, salt }) => {
                                 </>
                             }
                         >
-                            <p className="font-bold text-foreground">{item.name}</p>
+                            <p className="font-bold text-primary-text">{item.name}</p>
                             <p className="text-sm text-muted-foreground">{item.username}</p>
                             {breachStatus[item.id]?.pwned && (
                                 <p className="text-xs text-destructive mt-1">

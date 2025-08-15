@@ -14,7 +14,7 @@ const ConfirmDeleteModal = ({ isOpen, onClose, onConfirm, itemName }) => {
                         <ExclamationTriangleIcon className="h-6 w-6 text-destructive" aria-hidden="true" />
                     </div>
                     <div className="mt-0 text-left">
-                        <h3 className="text-lg leading-6 font-bold text-foreground">Delete Item</h3>
+                        <h3 className="text-lg leading-6 font-bold text-primary-text">Delete Item</h3>
                         <div className="mt-2">
                             <p className="text-sm text-muted-foreground">
                                 Are you sure you want to delete this {itemName}? This action cannot be undone.

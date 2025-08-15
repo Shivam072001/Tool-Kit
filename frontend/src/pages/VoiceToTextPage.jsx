@@ -119,11 +119,11 @@ const VoiceToTextPage = () => {
             case OPERATION_STATUSES.SUCCESS:
                 return (
                     <div>
-                        <h3 className="text-xl font-bold text-foreground">
+                        <h3 className="text-xl font-bold text-primary-text">
                             Transcription Result
                         </h3>
                         <div className="mt-4 p-4 bg-input border border-border rounded-xl max-h-60 overflow-y-auto">
-                            <p className="text-foreground whitespace-pre-wrap">
+                            <p className="text-primary-text whitespace-pre-wrap">
                                 {resultText}
                             </p>
                         </div>
@@ -151,7 +151,7 @@ const VoiceToTextPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Voice to Text</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Voice to Text</h1>
             <p className="text-muted-foreground mb-8">
                 Transcribe speech from your microphone or an audio file.
             </p>
@@ -162,7 +162,7 @@ const VoiceToTextPage = () => {
                         onClick={() => setActiveTab("realtime")}
                         className={`flex-1 p-4 font-semibold text-center transition-colors flex justify-center items-center ${activeTab === "realtime"
                             ? "bg-primary text-primary-foreground"
-                            : "hover:bg-input text-foreground"
+                            : "hover:bg-input text-primary-text"
                             }`}
                     >
                         <MicrophoneIcon className="h-5 w-5 mr-2" /> Real-time
@@ -171,7 +171,7 @@ const VoiceToTextPage = () => {
                         onClick={() => setActiveTab("file")}
                         className={`flex-1 p-4 font-semibold text-center transition-colors flex justify-center items-center ${activeTab === "file"
                             ? "bg-primary text-primary-foreground"
-                            : "hover:bg-input text-foreground"
+                            : "hover:bg-input text-primary-text"
                             }`}
                     >
                         <ArrowUpOnSquareIcon className="h-5 w-5 mr-2" /> Upload File
@@ -181,7 +181,7 @@ const VoiceToTextPage = () => {
                 <div className="p-8">
                     {activeTab === "realtime" && (
                         <div>
-                            <h2 className="text-2xl font-semibold text-foreground mb-4">
+                            <h2 className="text-2xl font-semibold text-primary-text mb-4">
                                 Real-time Transcription
                             </h2>
                             {!hasSupport ? (
@@ -217,7 +217,7 @@ const VoiceToTextPage = () => {
                     )}
                     {activeTab === "file" && (
                         <div>
-                            <h2 className="text-2xl font-semibold text-foreground mb-4">
+                            <h2 className="text-2xl font-semibold text-primary-text mb-4">
                                 Transcribe Audio File
                             </h2>
                             {status === "idle" ? (
@@ -225,7 +225,7 @@ const VoiceToTextPage = () => {
                                     <Dropzone onDrop={handleDrop} accept={{ "audio/*": [] }} />
                                     {file && (
                                         <div className="mt-6 text-center animate-fadeIn">
-                                            <p className="text-foreground">
+                                            <p className="text-primary-text">
                                                 Selected:{" "}
                                                 <span className="font-medium">{file.name}</span>
                                             </p>

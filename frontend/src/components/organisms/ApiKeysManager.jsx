@@ -74,7 +74,7 @@ const ApiKeysManager = () => {
 
     return (
         <Card className="p-6 mt-6 animate-slideInLeft delay-400">
-            <h3 className="font-bold text-lg text-foreground mb-4 flex items-center">
+            <h3 className="font-bold text-lg text-primary-text mb-4 flex items-center">
                 <KeyIcon className="h-6 w-6 mr-2 text-primary" />
                 Custom LLM API Keys
             </h3>

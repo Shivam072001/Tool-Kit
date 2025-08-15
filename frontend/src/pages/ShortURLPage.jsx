@@ -108,7 +108,7 @@ const ShortURLPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">URL Shortener</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">URL Shortener</h1>
             <p className="text-muted-foreground mb-8">Create short, memorable links in seconds.</p>
 
             <Card className="p-8 animate-fadeIn">

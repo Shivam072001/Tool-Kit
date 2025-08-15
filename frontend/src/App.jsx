@@ -63,7 +63,7 @@ function App() {
         </Route>
 
         {/* Fallback route now correctly points to the main dashboard */}
-        <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

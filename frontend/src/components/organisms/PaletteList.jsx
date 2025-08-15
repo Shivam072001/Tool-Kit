@@ -9,7 +9,7 @@ const PaletteList = ({ palettes, onDeleteClick, onPaletteClick }) => {
     }
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">
                 Saved Palettes
             </h2>
             <div className="space-y-4">
@@ -33,7 +33,7 @@ const PaletteList = ({ palettes, onDeleteClick, onPaletteClick }) => {
                             onClick={() => onPaletteClick(palette.colors)}
                             className="w-full text-left"
                         >
-                            <p className="font-bold text-foreground">{palette.name}</p>
+                            <p className="font-bold text-primary-text">{palette.name}</p>
                             <div className="flex gap-2 mt-2">
                                 {palette.colors.map((color, index) => (
                                     <div

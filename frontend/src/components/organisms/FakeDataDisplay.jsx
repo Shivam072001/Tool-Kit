@@ -46,7 +46,7 @@ const FakeDataDisplay = ({ data }) => {
     return (
         <Card className="mt-8 p-0">
             <div className="flex justify-between items-center p-6 border-b border-border">
-                <h3 className="text-xl font-bold text-foreground">Generated Data</h3>
+                <h3 className="text-xl font-bold text-primary-text">Generated Data</h3>
                 <div className="flex gap-2">
                     <Button onClick={() => handleExport('json')} variant="ghost">
                         <DocumentArrowDownIcon className="h-5 w-5 mr-2" /> JSON
@@ -61,7 +61,7 @@ const FakeDataDisplay = ({ data }) => {
                     <thead className="sticky top-0 bg-card">
                         <tr>
                             {headers.map(header => (
-                                <th key={header} className="px-6 py-3 font-semibold text-foreground capitalize">
+                                <th key={header} className="px-6 py-3 font-semibold text-primary-text capitalize">
                                     {header.replace(/_/g, ' ')}
                                 </th>
                             ))}

@@ -61,7 +61,7 @@ const GrammarCheckerPage = () => {
             parts.push(
                 <span key={index} className="bg-primary/30 rounded px-1 relative group cursor-pointer">
                     {text.substring(match.offset, match.offset + match.length)}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-card border border-border rounded-xl shadow-lg p-3 text-sm text-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto z-10">
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-card border border-border rounded-xl shadow-lg p-3 text-sm text-primary-text opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto z-10">
                         <p className="font-bold text-destructive flex items-center gap-2 mb-2"><LightBulbIcon className="h-5 w-5" />{match.message}</p>
                         {match.replacements.length > 0 && (
                             <div className="mt-2 pt-2 border-t border-border">
@@ -92,7 +92,7 @@ const GrammarCheckerPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">AI Grammar Checker</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">AI Grammar Checker</h1>
             <p className="text-muted-foreground mb-8">Improve your writing with advanced grammar and style suggestions.</p>
 
             <Card className="p-1">
