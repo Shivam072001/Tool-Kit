@@ -103,7 +103,7 @@ const BackgroundRemoverPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">
                 AI Background Remover
             </h1>
             <p className="text-muted-foreground mb-8">
@@ -116,7 +116,7 @@ const BackgroundRemoverPage = () => {
                         <Dropzone onDrop={handleDrop} accept={{ 'image/*': [] }} />
                         {file && (
                             <div className="mt-6 text-center animate-fadeIn">
-                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <p className="text-primary-text">Selected: <span className="font-medium">{file.name}</span></p>
                                 <div className="mt-4 flex justify-center">
                                     <img src={originalImageUrl} alt="Original preview" className="max-h-48 rounded-xl shadow-md border border-border" />
                                 </div>
@@ -143,13 +143,13 @@ const BackgroundRemoverPage = () => {
                 {status === OPERATION_STATUSES.SUCCESS && resultUrl && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fadeIn">
                         <div>
-                            <h3 className="font-bold text-lg text-center mb-2 text-foreground">Result</h3>
+                            <h3 className="font-bold text-lg text-center mb-2 text-primary-text">Result</h3>
                             <div className="bg-grid-pattern p-2 rounded-xl border border-border aspect-square">
                                 <canvas ref={canvasRef} className="w-full h-full rounded-lg" />
                             </div>
                         </div>
                         <div>
-                            <h3 className="font-bold text-lg text-center mb-2 text-foreground">Customize Background</h3>
+                            <h3 className="font-bold text-lg text-center mb-2 text-primary-text">Customize Background</h3>
                             <div className="space-y-4">
                                 <div>
                                     <Label htmlFor="bg-color">Background Color</Label>

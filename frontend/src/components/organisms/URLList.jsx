@@ -29,10 +29,10 @@ const URLList = ({ urls, onDeleteClick, onDisable, onEnable }) => {
                         key={url._id}
                         actions={
                             <>
-                                <span className={`font-mono text-sm px-2 py-1 rounded-md ${isDisabled ? 'bg-border text-muted-foreground' : 'bg-border text-foreground'}`}>
+                                <span className={`font-mono text-sm px-2 py-1 rounded-md ${isDisabled ? 'bg-border text-muted-foreground' : 'bg-border text-primary-text'}`}>
                                     Clicks: {url.clicks} / {url.maxClicks || '∞'}
                                 </span>
-                                <button onClick={() => copyToClipboard(fullShortUrl)} className="p-2 text-muted-foreground hover:text-foreground hover:bg-border rounded-full" title="Copy to clipboard">
+                                <button onClick={() => copyToClipboard(fullShortUrl)} className="p-2 text-muted-foreground hover:text-primary-text hover:bg-border rounded-full" title="Copy to clipboard">
                                     <ClipboardDocumentIcon className="h-5 w-5" />
                                 </button>
 
@@ -53,7 +53,7 @@ const URLList = ({ urls, onDeleteClick, onDisable, onEnable }) => {
                         }
                     >
                         <div className={isDisabled ? 'opacity-50' : ''}>
-                            <p className="text-lg font-bold text-foreground">{fullShortUrl}</p>
+                            <p className="text-lg font-bold text-primary-text">{fullShortUrl}</p>
                             <a
                                 href={isDisabled ? undefined : url.originalUrl}
                                 target="_blank"

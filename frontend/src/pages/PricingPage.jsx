@@ -109,7 +109,7 @@ const PricingPage = () => {
     const plans = pricingPlans[billingCycle];
 
     return (
-        <div className="min-h-screen bg-background text-foreground p-8 flex flex-col items-center">
+        <div className="min-h-screen bg-primary-bg text-primary-text p-8 flex flex-col items-center">
             <header className="text-center py-16 animate-fadeIn">
                 <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
                     Simple, Transparent Pricing
@@ -123,13 +123,13 @@ const PricingPage = () => {
             <div className="flex items-center gap-4 mb-12 animate-fadeIn delay-300">
                 <button
                     onClick={() => setBillingCycle('monthly')}
-                    className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${billingCycle === 'monthly' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-foreground hover:bg-input'}`}
+                    className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${billingCycle === 'monthly' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-primary-text hover:bg-input'}`}
                 >
                     Monthly
                 </button>
                 <button
                     onClick={() => setBillingCycle('yearly')}
-                    className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${billingCycle === 'yearly' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-foreground hover:bg-input'}`}
+                    className={`px-6 py-2 rounded-full font-bold transition-all duration-300 ${billingCycle === 'yearly' ? 'bg-primary text-primary-foreground shadow-lg' : 'text-primary-text hover:bg-input'}`}
                 >
                     Yearly (Save 15%)
                 </button>
@@ -148,9 +148,9 @@ const PricingPage = () => {
                                 Most Popular
                             </span>
                         )}
-                        <h2 className="text-3xl font-extrabold mb-2 text-foreground">{plan.name}</h2>
+                        <h2 className="text-3xl font-extrabold mb-2 text-primary-text">{plan.name}</h2>
                         <p className="text-muted-foreground mb-6 h-12 flex-shrink-0">{plan.description}</p>
-                        <p className="text-5xl font-bold mb-1 text-foreground flex items-baseline">
+                        <p className="text-5xl font-bold mb-1 text-primary-text flex items-baseline">
                             ${plan.price}
                             {plan.price !== '0' && <span className="text-lg font-normal text-muted-foreground ml-1">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>}
                         </p>
@@ -159,7 +159,7 @@ const PricingPage = () => {
                                 {plan.features.map((feature, i) => (
                                     <li key={i} className="flex items-center gap-3">
                                         <CheckCircleIcon className="h-6 w-6 text-primary" />
-                                        <span className="text-foreground">{feature}</span>
+                                        <span className="text-primary-text">{feature}</span>
                                     </li>
                                 ))}
                                 {plan.unavailableFeatures && plan.unavailableFeatures.map((feature, i) => (
@@ -172,7 +172,7 @@ const PricingPage = () => {
                         </div>
                         <Link
                             to={plan.price === '0' ? ROUTES.REGISTER : '#'}
-                            className={`mt-8 w-full block text-center px-6 py-3 rounded-full font-bold transition-all duration-300 ${plan.isPopular ? 'bg-primary text-primary-foreground hover:shadow-xl' : 'bg-input text-foreground hover:bg-border'}`}
+                            className={`mt-8 w-full block text-center px-6 py-3 rounded-full font-bold transition-all duration-300 ${plan.isPopular ? 'bg-primary text-primary-foreground hover:shadow-xl' : 'bg-input text-primary-text hover:bg-border'}`}
                         >
                             {plan.price === '0' ? 'Get Started Free' : 'Choose Plan'}
                         </Link>

@@ -48,7 +48,7 @@ const features = [
 
 const LandingPage = () => {
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-background text-foreground overflow-x-hidden p-8">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-primary-bg text-primary-text overflow-x-hidden p-8">
             {/* Hero Section */}
             <header className="relative w-full max-w-7xl mx-auto text-center py-20 animate-fadeIn">
                 <div className="absolute inset-0 bg-primary/10 rounded-full h-96 w-96 -top-20 -left-20 animate-pulse-slow"></div>
@@ -56,13 +56,13 @@ const LandingPage = () => {
 
                 <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
                     <span className="text-primary block">Your All-in-One Utility</span>
-                    <span className="text-foreground block">Box for the Web</span>
+                    <span className="text-primary-text block">Box for the Web</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8 animate-fadeIn delay-300">
                     Simplify your daily tasks with a suite of powerful, integrated tools. From file compression to secure password management, we've got you covered.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <Link to={ROUTES.DASHBOARD} className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <Link to={ROUTES.LOGIN} className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                         Get Started
                     </Link>
                     <Link to="/pricing" className="px-8 py-3 text-primary font-bold rounded-full border-2 border-primary hover:bg-primary/10 transition-colors duration-300 transform hover:scale-105">
@@ -84,7 +84,7 @@ const LandingPage = () => {
                             style={{ animationDelay: `${500 + index * 100}ms` }}
                         >
                             <feature.icon className="h-16 w-16 text-primary mb-4" />
-                            <h3 className="text-2xl font-semibold mb-2 text-foreground">{feature.title}</h3>
+                            <h3 className="text-2xl font-semibold mb-2 text-primary-text">{feature.title}</h3>
                             <p className="text-muted-foreground">{feature.description}</p>
                         </div>
                     ))}

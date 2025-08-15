@@ -45,12 +45,12 @@ const PasswordGenerator = () => {
 
     return (
         <Card className="p-6 sticky top-28">
-            <h3 className="text-xl font-bold mb-4 text-foreground">Generate a Password</h3>
+            <h3 className="text-xl font-bold mb-4 text-primary-text">Generate a Password</h3>
 
             <div className="relative mb-4">
                 <Input id="generated-password" type="text" value={password} readOnly placeholder="Click Generate..." />
                 <button onClick={copyToClipboard} className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <ClipboardDocumentIcon className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+                    <ClipboardDocumentIcon className="h-5 w-5 text-muted-foreground hover:text-primary-text" />
                 </button>
             </div>
             {copied && <p className="text-sm text-green-500 text-center mb-4">Copied to clipboard!</p>}

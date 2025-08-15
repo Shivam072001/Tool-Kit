@@ -1,8 +1,8 @@
-const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
-    ? process.env.CORS_ALLOWED_ORIGINS.split(',')
-    : [];
+import { config } from "./env.js";
 
-if (process.env.NODE_ENV === 'development') {
+const allowedOrigins = config.corsAllowedOrigins;
+
+if (config.nodeEnv === 'development') {
     // In development, allow the default Vite frontend origin
     allowedOrigins.push('http://localhost:5173');
 }

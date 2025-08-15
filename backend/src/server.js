@@ -18,6 +18,7 @@ import { config } from './config/env.js';
 import { logger } from './utils/Logger.js';
 import { LEVELS } from './constants/index.js';
 import { swaggerSpec } from './config/swagger.js';
+import { AppError } from './utils/AppError.js';
 
 // Load environment variables
 dotenv.config();

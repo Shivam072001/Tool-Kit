@@ -11,7 +11,7 @@ const ThemeSwitcher = () => {
         <div className="flex items-center gap-2">
             <div className="relative group">
                 <button className="p-2 rounded-full hover:bg-border transition-colors">
-                    <PaintBrushIcon className="h-6 w-6 text-foreground" />
+                    <PaintBrushIcon className="h-6 w-6 text-primary-text" />
                 </button>
                 <div className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto z-50">
                     <div className="py-2">
@@ -31,7 +31,7 @@ const ThemeSwitcher = () => {
 
             <button onClick={toggleMode} className="p-2 rounded-full hover:bg-border transition-colors">
                 {mode === 'light' ? (
-                    <MoonIcon className="h-6 w-6 text-foreground" />
+                    <MoonIcon className="h-6 w-6 text-primary-text" />
                 ) : (
                     <SunIcon className="h-6 w-6 text-yellow-400" />
                 )}

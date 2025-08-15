@@ -87,7 +87,7 @@ const MetadataInspectorPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">
                 Metadata Inspector
             </h1>
             <p className="text-muted-foreground mb-8">
@@ -98,7 +98,7 @@ const MetadataInspectorPage = () => {
                 <Dropzone onDrop={handleDrop} />
                 {file && (
                     <div className="mt-6 text-center animate-fadeIn">
-                        <p className="text-foreground">
+                        <p className="text-primary-text">
                             Selected: <span className="font-medium">{file.name}</span>
                         </p>
                         <Button

@@ -157,7 +157,7 @@ const RegexTesterPage = () => {
 
     return (
         <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Regex Tester</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Regex Tester</h1>
             <p className="text-muted-foreground mb-8">
                 Test and save your regular expressions in real-time.
             </p>
@@ -227,7 +227,7 @@ const RegexTesterPage = () => {
                 </div>
             </Card>
 
-            <h3 className="text-2xl font-bold my-4 text-foreground">Result</h3>
+            <h3 className="text-2xl font-bold my-4 text-primary-text">Result</h3>
             {isLoadingApi && <div className="flex justify-center"><p className="text-muted-foreground">Testing...</p></div>}
             <RegexResultDisplay
                 testString={testString}

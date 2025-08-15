@@ -9,7 +9,7 @@ const Button = ({ children, onClick, type = 'button', variant = 'primary', disab
         primary: 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/90 hover:shadow-lg',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-lg',
-        ghost: 'hover:bg-input text-foreground hover:text-primary',
+        ghost: 'hover:bg-input text-primary-text hover:text-primary',
     };
 
     return (

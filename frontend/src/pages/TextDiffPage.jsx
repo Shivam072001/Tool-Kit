@@ -92,7 +92,7 @@ const TextDiffPage = () => {
 
     return (
         <div className="max-w-6xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Text Difference Checker</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Text Difference Checker</h1>
             <p className="text-muted-foreground mb-8">Compare two pieces of text to see what's changed. Your comparisons are saved automatically.</p>
 
             <Card className="p-8">

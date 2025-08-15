@@ -96,12 +96,12 @@ const FileConverterPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">File Converter</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">File Converter</h1>
             <p className="text-muted-foreground mb-8">Convert your files from one format to another with a single click.</p>
 
             <Card className="p-8">
                 <div className="border-b border-border pb-6 mb-6">
-                    <h2 className="text-2xl font-semibold text-foreground">Select File and Conversion</h2>
+                    <h2 className="text-2xl font-semibold text-primary-text">Select File and Conversion</h2>
                 </div>
 
                 {status === 'idle' ? (
@@ -109,7 +109,7 @@ const FileConverterPage = () => {
                         <Dropzone onDrop={handleDrop} accept={acceptedFiles} />
                         {file && (
                             <div className="mt-6 text-center">
-                                <p className="text-foreground">Selected: <span className="font-medium">{file.name}</span></p>
+                                <p className="text-primary-text">Selected: <span className="font-medium">{file.name}</span></p>
                                 {possibleConversions.length > 0 && (
                                     <div className="mt-4">
                                         <Label htmlFor="output-format" className="text-muted-foreground mr-2">Convert to:</Label>

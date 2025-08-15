@@ -29,7 +29,7 @@ const DiffResultDisplay = ({ diffResult, language }) => {
 
     return (
         <Card className="mt-8 p-0">
-            <h3 className="text-xl font-bold text-foreground p-6 border-b border-border">
+            <h3 className="text-xl font-bold text-primary-text p-6 border-b border-border">
                 Comparison Result
             </h3>
             <pre className="p-6 whitespace-pre-wrap break-words text-sm font-mono bg-input">

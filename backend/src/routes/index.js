@@ -21,22 +21,22 @@ import { apiKeyRoutes } from './apiKey.routes.js';
 const router = express.Router();
 
 // --- API Routes ---
-router.use('/api/auth', authRoutes);
-router.use('/api/plans', planRoutes);
-router.use('/api/keys', apiKeyRoutes);
-router.use('/api/urls', shortUrlRoutes);
-router.use('/api/files', fileOperationRoutes);
-router.use('/api/text', textOperationRoutes);
-router.use('/api/audio', audioOperationRoutes);
-router.use('/api/qrcodes', qrCodeRoutes);
-router.use('/api/vault', passwordVaultRoutes);
-router.use('/api/share', secureShareRoutes);
-router.use('/api/currency', currencyConverterRoutes);
-router.use('/api/text-diff', textDiffRoutes);
-router.use('/api/colors', colorPaletteRoutes);
-router.use('/api/temp-email', temporaryEmailRoutes);
-router.use('/api/metadata', metadataOperationRoutes);
-router.use('/api/regex', regexRoutes);
+router.use('/auth', authRoutes);
+router.use('/plans', planRoutes);
+router.use('/keys', apiKeyRoutes);
+router.use('/urls', shortUrlRoutes);
+router.use('/files', fileOperationRoutes);
+router.use('/text', textOperationRoutes);
+router.use('/audio', audioOperationRoutes);
+router.use('/qrcodes', qrCodeRoutes);
+router.use('/vault', passwordVaultRoutes);
+router.use('/share', secureShareRoutes);
+router.use('/currency', currencyConverterRoutes);
+router.use('/text-diff', textDiffRoutes);
+router.use('/colors', colorPaletteRoutes);
+router.use('/temp-email', temporaryEmailRoutes);
+router.use('/metadata', metadataOperationRoutes);
+router.use('/regex', regexRoutes);
 
 // --- Root Level Routes ---
 router.get('/:code', redirect);

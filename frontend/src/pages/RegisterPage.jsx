@@ -37,9 +37,9 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-background p-4">
+        <div className="flex items-center justify-center min-h-screen bg-primary-bg p-4">
             <Card className="p-8 w-full max-w-md shadow-2xl animate-fadeIn">
-                <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Create an Account</h2>
+                <h2 className="text-3xl font-bold mb-6 text-center text-primary-text">Create an Account</h2>
                 <AuthForm
                     formType="register"
                     onSubmit={handleRegister}

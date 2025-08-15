@@ -55,7 +55,7 @@ const SharePasswordModal = ({ isOpen, onClose, itemToShare }) => {
                 <button onClick={resetAndClose} className="absolute top-4 right-4 p-1 rounded-full hover:bg-border">
                     <XMarkIcon className="h-6 w-6 text-muted-foreground" />
                 </button>
-                <h3 className="text-xl font-bold text-foreground mb-4">Share '{itemToShare.name}'</h3>
+                <h3 className="text-xl font-bold text-primary-text mb-4">Share '{itemToShare.name}'</h3>
 
                 {status !== OPERATION_STATUSES.SUCCESS && (
                     <div className="space-y-4">

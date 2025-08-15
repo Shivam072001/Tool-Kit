@@ -17,7 +17,7 @@ const CurrencyConversionList = ({ history, onDeleteClick }) => {
 
     return (
         <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 text-foreground">
+            <h2 className="text-2xl font-bold mb-4 text-primary-text">
                 Recent Conversions
             </h2>
             <div className="space-y-4">
@@ -36,7 +36,7 @@ const CurrencyConversionList = ({ history, onDeleteClick }) => {
                     >
                         <div className="flex items-center justify-between w-full">
                             <div>
-                                <p className="text-foreground">
+                                <p className="text-primary-text">
                                     <span className="font-bold">{item.amount}</span>{" "}
                                     {item.fromCurrency}
                                 </p>

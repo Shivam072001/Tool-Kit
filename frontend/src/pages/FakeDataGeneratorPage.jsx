@@ -98,7 +98,7 @@ const FakeDataGeneratorPage = () => {
 
     return (
         <div className="max-w-6xl mx-auto animate-fadeIn">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Fake Data Generator</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Fake Data Generator</h1>
             <p className="text-muted-foreground mb-8">
                 Create realistic placeholder data for your projects and mockups.
             </p>

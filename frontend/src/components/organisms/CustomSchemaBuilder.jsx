@@ -26,7 +26,7 @@ const CustomSchemaBuilder = ({ schema, setSchema }) => {
 
     return (
         <div className="mt-6 border-t border-border pt-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Custom Schema Builder</h3>
+            <h3 className="text-lg font-semibold text-primary-text mb-4">Custom Schema Builder</h3>
             <div className="space-y-4">
                 {schema.map((field, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-2 bg-input rounded-md">

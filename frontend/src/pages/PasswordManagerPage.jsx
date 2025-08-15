@@ -50,9 +50,9 @@ const PasswordManagerPage = () => {
 
     if (!isUnlocked) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-background p-4">
+            <div className="flex items-center justify-center min-h-screen bg-primary-bg p-4">
                 <Card className="p-8 w-full max-w-md animate-fadeIn shadow-2xl">
-                    <h2 className="text-3xl font-bold mb-6 text-center text-foreground">Unlock Your Vault</h2>
+                    <h2 className="text-3xl font-bold mb-6 text-center text-primary-text">Unlock Your Vault</h2>
                     <p className="text-center text-muted-foreground mb-4">
                         Enter your master password. This password is never sent to our servers.
                     </p>
@@ -72,7 +72,7 @@ const PasswordManagerPage = () => {
     // Render the main password manager UI once unlocked
     return (
         <div className="max-w-6xl mx-auto">
-            <h1 className="text-4xl font-bold mb-2 text-foreground">Password Manager</h1>
+            <h1 className="text-4xl font-bold mb-2 text-primary-text">Password Manager</h1>
             <p className="text-muted-foreground mb-8">Securely store and generate your passwords.</p>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

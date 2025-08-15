@@ -34,9 +34,9 @@ const SharedPasswordPage = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="flex items-center justify-center min-h-screen bg-primary-bg">
             <Card className="p-8 w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-foreground">View Shared Password</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center text-primary-text">View Shared Password</h2>
 
                 {status === 'loading' && <div className="flex justify-center"><Spinner /></div>}
 
@@ -46,11 +46,11 @@ const SharedPasswordPage = () => {
                     <div className="space-y-4">
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Website/Service</p>
-                            <p className="text-lg text-foreground">{item.name}</p>
+                            <p className="text-lg text-primary-text">{item.name}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Username/Email</p>
-                            <p className="text-lg text-foreground">{item.username}</p>
+                            <p className="text-lg text-primary-text">{item.username}</p>
                         </div>
                         <div>
                             <p className="text-sm font-medium text-muted-foreground">Password</p>
