@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "axios": "^1.11.0",
+    "chalk": "^5.5.0",
     "crypto-js": "^4.2.0",
     "diff": "^8.0.2",
     "highlight.js": "^11.11.1",
