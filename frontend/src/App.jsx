@@ -59,6 +59,7 @@ function App() {
             <Route path={BASE_ROUTE + ROUTES.METADATA_INSPECTOR} element={<MetadataInspectorPage />} />
             <Route path={BASE_ROUTE + ROUTES.FAKE_DATA_GENERATOR} element={<FakeDataGeneratorPage />} />
             <Route path={BASE_ROUTE + ROUTES.REGEX_TESTER} element={<RegexTesterPage />} />
+            <Route path="*" element={<Navigate to={BASE_ROUTE + ROUTES.DASHBOARD} replace />} />
           </Route>
         </Route>
 

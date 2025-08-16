@@ -17,8 +17,8 @@ const LoginPage = () => {
         setError(null);
         setIsLoading(true);
         try {
-            const { token, data } = await authService.login({ email, password });
-            loginAction({ user: data.user, token });
+            const { user, token } = await authService.login({ email, password });
+            loginAction({ user, token });
             navigate(ROUTES.DASHBOARD);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to log in.');
