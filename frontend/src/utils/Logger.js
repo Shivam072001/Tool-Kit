@@ -1,115 +1,129 @@
-import { LOG_LEVELS, LOG_LEVEL_COLORS } from '../constants/index.js'
+import chalk from 'chalk';
+import { LEVELS } from '../constants/index.js';
 
-/**
- * A custom logger class with color-coded log levels and detailed stack trace information.
- * This logger is self-contained and does not rely on any external libraries.
- */
+const { INFO, DEBUG, WARN, ERROR } = LEVELS;
+
 class Logger {
-    // ANSI escape codes for console colors
-    static COLORS = LOG_LEVEL_COLORS;
-
     /**
      * Parses the V8 stack trace to find the file and line number of the log caller.
      * @returns {{fileInfo: string, history: string[]}} An object containing the immediate caller's file info and the full call stack history.
      */
+
+    colorizeJson(obj) {
+        return JSON.stringify(obj, null, 2)
+            .replace(/"([^"]+)":/g, chalk.cyan('"$1":')) // keys
+            .replace(/: "([^"]+)"/g, ': ' + chalk.green('"$1"')) // string values
+            .replace(/: (\d+)/g, ': ' + chalk.yellow('$1')) // numbers
+            .replace(/: (true|false)/g, ': ' + chalk.magenta('$1')) // booleans
+            .replace(/: null/g, ': ' + chalk.gray('null')); // nulls
+    }
+
     _getStackTrace() {
         const err = new Error();
-        const stack = err.stack.split('\n');
+        const stack = err.stack.split('\n').slice(1);
 
-        const callerLine = stack[2] || '';
-        const fileInfo = callerLine.trim().replace('at ', '');
+        const callerLine = stack.find(line =>
+            !line.includes('Logger.js') &&
+            !line.includes('logger.js')
+        ) || '';
 
-        // For detailedLog, we want the full history leading up to the logger call.
+        const match = callerLine.match(/\((.*)\)/);
+        const fileInfo = match ? match[1] : callerLine.trim().replace(/^at\s+/, '');
+
         const history = stack
-            .slice(2) // Skip logger-internal calls
-            .map(line => line.trim().replace('at ', ''))
-            .filter(line => line); // Remove any empty lines
+            .map(line => line.trim().replace(/^at\s+/, ''))
+            .filter(Boolean);
 
         return { fileInfo, history };
     }
 
+
     /**
-     * The core logging function.
-     * @param {string} level - The log level (e.g., 'info', 'error').
-     * @param {string} message - The message to log.
-     * @param {*} data - The data payload to log (object, array, string, etc.).
+     * Core logging function
      */
     _log(level, message, data) {
-        const color = Logger.COLORS[level] || Logger.COLORS.RESET;
         const { fileInfo } = this._getStackTrace();
+        const timestamp = new Date().toLocaleString('en-GB', {
+            year: 'numeric',
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+
+
+        // Choose chalk color based on log level
+        const colorMap = {
+            [INFO]: chalk.green,
+            [DEBUG]: chalk.blue,
+            [WARN]: chalk.yellow,
+            [ERROR]: chalk.red,
+            DETAILS: chalk.cyan,
+            SUCCESS: chalk.greenBright
+        };
+        const colorFn = colorMap[level] || chalk.white;
+
+        const levelString = `[${level.toUpperCase()}]`.padEnd(9, ' ');
 
         const logObject = {
             level: level.toUpperCase(),
-            timestamp: new Date().toISOString(),
+            timestamp,
             file: fileInfo,
-            message: message,
-            data: data
+            message,
+            data
         };
 
-        const timestamp = new Date().toISOString();
-        const levelString = `[${level.toUpperCase()}]`.padEnd(9, ' ');
+        // Print level + timestamp in color
+        console.log(colorFn(`${levelString}${timestamp}`));
 
-        console.log(`${color}${levelString}${timestamp}${Logger.COLORS.RESET}`);
-        console.log(JSON.stringify(logObject, null, 2));
-        console.log(''); // Add a newline for readability
+        // Print JSON in plain white (to avoid messy coloring inside JSON)
+        console.log(this.colorizeJson(logObject));
+        console.log('');
     }
 
-    /**
-     * Logs an informational message. (Green)
-     * @param {string} message - The message to log.
-     * @param {*} [data] - Optional data payload.
-     */
     info(message, data = null) {
-        this._log(LOG_LEVELS.INFO, message, data);
+        this._log(INFO, message, data);
     }
 
-    /**
-     * Logs a debug message. (Blue)
-     * @param {string} message - The message to log.
-     * @param {*} [data] - Optional data payload.
-     */
     debug(message, data = null) {
-        this._log(LOG_LEVELS.DEBUG, message, data);
+        this._log(DEBUG, message, data);
     }
 
-    /**
-     * Logs a warning message. (Yellow)
-     * @param {string} message - The message to log.
-     * @param {*} [data] - Optional data payload.
-     */
     warn(message, data = null) {
-        this._log(LOG_LEVELS.WARN, message, data);
+        this._log(WARN, message, data);
     }
 
-    /**
-     * Logs an error message. (Red)
-     * @param {string} message - The message to log.
-     * @param {*} [data] - Optional data payload.
-     */
     error(message, data = null) {
-        this._log(LOG_LEVELS.ERROR, message, data);
+        this._log(ERROR, message, data);
     }
 
-    /**
-     * Logs a detailed message with a full callback history. (Orange)
-     * @param {string} message - The message to log.
-     * @param {*} [data] - Optional data payload.
-     */
     detailedLog(message, data = null) {
-        const color = Logger.COLORS.DETAILS;
         const { history } = this._getStackTrace();
-
         const logObject = {
-            level: LOG_LEVELS.DETAILS,
+            level: 'DETAILS',
             timestamp: new Date().toISOString(),
-            'file_callback_history': history,
-            message: message,
-            data: data
+            file_callback_history: history,
+            message,
+            data
         };
+        console.log(chalk.cyan(JSON.stringify(logObject, null, 2)));
+    }
 
-        console.log(`${color}%s${Logger.COLORS.DETAILS}`, JSON.stringify(logObject, null, 2));
+    message(message, type) {
+        const typeColorMap = {
+            error: chalk.red,
+            info: chalk.green,
+            warn: chalk.yellow,
+            success: chalk.greenBright
+        };
+        const colorFn = typeColorMap[type] || chalk.white;
+        const timestamp = new Date().toISOString();
+        const typeLabel = `[${type.toUpperCase()}]`.padEnd(9, ' ');
+
+        console.log(colorFn(`${typeLabel}${timestamp} ${message}`));
     }
 }
 
-// Export a single, ready-to-use instance of the logger
 export const logger = new Logger();

@@ -77,7 +77,7 @@ export const DEFAULTS = {
     MODE: 'dark',
 };
 
-export const LOG_LEVELS = {
+export const LEVELS = {
     INFO: 'info',
     DEBUG: 'debug',
     WARN: 'warn',

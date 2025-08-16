@@ -100,7 +100,7 @@ const toolLinks = [
         icon: TableCellsIcon,
     },
     {
-        name: "Fake Data Generator",
+        name: "Regex Tester",
         path: `${BASE_ROUTE}${ROUTES.REGEX_TESTER}`,
         icon: WrenchIcon,
     },

@@ -1,5 +1,6 @@
 import { BACKEND_ROUTES } from '../constants';
 import axiosInstance from '../lib/axiosInstance';
+import { logger } from '../utils/Logger';
 
 const { AUTH } = BACKEND_ROUTES;
 
@@ -19,6 +20,10 @@ export const authService = {
      */
     login: async (credentials) => {
         const response = await axiosInstance.post(`${AUTH}/login`, credentials);
-        return response.data;
+        const { data } = response.data;
+        return {
+            user: data.user,
+            token: data.token,
+        };
     },
 };

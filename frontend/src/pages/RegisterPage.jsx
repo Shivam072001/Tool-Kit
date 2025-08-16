@@ -26,7 +26,7 @@ const RegisterPage = () => {
         setError(null);
         setIsLoading(true);
         try {
-            const { token, data } = await authService.register({ email, password });
+            const { token, data } = await authService.register({ email, password, confirmPassword });
             loginAction({ user: data.user, token });
             navigate(ROUTES.DASHBOARD);
         } catch (err) {

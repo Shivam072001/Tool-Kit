@@ -18,7 +18,7 @@ export const fileService = {
      */
     uploadForCompression: async (file, onUploadProgress) => {
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('file', file);
 
         const response = await axiosInstance.post('/files/compress', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
